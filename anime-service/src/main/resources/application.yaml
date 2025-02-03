@@ -4,7 +4,8 @@ spring:
 
 server:
   servlet:
-    context-path: /${spring.application.name}/api
+#    context-path: /${spring.application.name}/v1
+    context-path: /v1
 
 application:
   title: Anime Service
