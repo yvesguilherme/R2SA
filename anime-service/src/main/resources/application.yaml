@@ -1,11 +1,19 @@
 spring:
   application:
     name: anime-service
+  threads:
+    virtual: # thread virtual que custa menos para o sistema operacional
+      enabled: true
 
 server:
   servlet:
 #    context-path: /${spring.application.name}/v1
     context-path: /v1
+  error:
+    include-stacktrace: on_param
+  jetty: # tomcat
+    threads:
+      max: 20
 
 application:
   title: Anime Service
