@@ -1,6 +1,7 @@
 package org.yvesguilherme.controller;
 
 import org.springframework.web.bind.annotation.*;
+import org.yvesguilherme.util.enums.HeroEnum;
 
 import java.util.List;
 
@@ -30,6 +31,6 @@ public class HeroController {
             .stream()
             .filter(hero -> hero.equalsIgnoreCase(name))
             .findFirst()
-            .orElse("Hero not found!");
+            .orElse(HeroEnum.NOT_FOUND.getMessage());
   }
 }

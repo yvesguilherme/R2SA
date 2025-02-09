@@ -8,3 +8,7 @@
 
 ### Platform Threads
 - Tomcat, Jetty
+
+### Jackson
+- Object -> JSON   = GET
+- JSON   -> Object = SET
