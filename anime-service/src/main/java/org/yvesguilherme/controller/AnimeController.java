@@ -61,7 +61,7 @@ public class AnimeController {
     anime.setId(ThreadLocalRandom.current().nextLong(100_000));
     Anime.getAnimes().add(anime);
 
-    return new ResponseEntity<>(anime, HttpStatus.OK);
+    return new ResponseEntity<>(anime, HttpStatus.CREATED);
   }
 
 }

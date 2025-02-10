@@ -63,7 +63,7 @@ public class ProducerController {
     producer.setId(ThreadLocalRandom.current().nextLong(100_000));
     Producer.getProducers().add(producer);
 
-    return new ResponseEntity<>(producer, HttpStatus.OK);
+    return new ResponseEntity<>(producer, HttpStatus.CREATED);
   }
 
 }
