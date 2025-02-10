@@ -6,17 +6,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.yvesguilherme.domain.Anime;
 import org.yvesguilherme.domain.Producer;
 import org.yvesguilherme.exception.AnimeNotFoundException;
 import org.yvesguilherme.exception.BadRequestException;
-import org.yvesguilherme.util.Constants;
+import org.yvesguilherme.request.ProducerPostRequest;
+import org.yvesguilherme.response.ProducerGetResponse;
 import org.yvesguilherme.util.enums.AnimeEnum;
 
-import java.util.Arrays;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("producers")
@@ -28,7 +27,7 @@ public class ProducerController {
       return new ResponseEntity<>(Producer.getProducers(), HttpStatus.OK);
     }
 
-    List<Producer> listOfProducers= Producer
+    List<Producer> listOfProducers = Producer
             .getProducers()
             .stream()
             .filter(a -> a.getName().toLowerCase().contains(name.toLowerCase()))
@@ -53,17 +52,30 @@ public class ProducerController {
           consumes = MediaType.APPLICATION_JSON_VALUE,
           headers = "x-api-key=1234"
   )
-  public ResponseEntity<Producer> save(@RequestBody Producer producer, @RequestHeader HttpHeaders httpHeaders) {
+  public ResponseEntity<ProducerGetResponse> save(@RequestBody ProducerPostRequest producerPostRequest, @RequestHeader HttpHeaders httpHeaders) {
     log.info("{}", httpHeaders);
 
-    if (producer.getName().isEmpty()) {
+    if (producerPostRequest.getName().isEmpty()) {
       throw new BadRequestException("The property name is invalid!");
     }
 
-    producer.setId(ThreadLocalRandom.current().nextLong(100_000));
+    var producer = Producer
+            .builder()
+            .id(ThreadLocalRandom.current().nextLong(100_000))
+            .name(producerPostRequest.getName())
+            .createdAt(LocalDateTime.now())
+            .build();
+
     Producer.getProducers().add(producer);
 
-    return new ResponseEntity<>(producer, HttpStatus.CREATED);
+    var producerGetResponse = ProducerGetResponse
+            .builder()
+            .id(producer.getId())
+            .name(producer.getName())
+            .createdAt(producer.getCreatedAt())
+            .build();
+
+    return new ResponseEntity<>(producerGetResponse, HttpStatus.CREATED);
   }
 
 }

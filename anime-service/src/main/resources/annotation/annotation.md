@@ -18,3 +18,6 @@ Um método HTTP é idempotente se uma requisição idêntica pode ser feita uma 
 
 - **GET, HEAD, PUT, e DELETE** são métodos idempotente
 - **POST** não é idempotente
+
+### Desacoplar o código
+- O código de domínio nunca deve ser exposto para os clientes e/ou outros sistemas
