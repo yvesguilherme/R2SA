@@ -1,14 +1,22 @@
 package org.yvesguilherme.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 @RestController
 @RequestMapping(value = "greetings")
+@Slf4j
 public class HelloController {
-  @GetMapping("hi")
+  @GetMapping()
   public String hi() {
     return "OMAE WA MOU SHIND IRU";
+  }
+
+  @PostMapping
+  public Long save(@RequestBody String name) {
+    log.info("save '{}'", name);
+    return ThreadLocalRandom.current().nextLong(1, 1000);
   }
 }
