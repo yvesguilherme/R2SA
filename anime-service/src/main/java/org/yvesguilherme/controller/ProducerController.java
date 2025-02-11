@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.yvesguilherme.domain.Producer;
 import org.yvesguilherme.exception.AnimeNotFoundException;
 import org.yvesguilherme.exception.BadRequestException;
+import org.yvesguilherme.mapper.ProducerMapper;
 import org.yvesguilherme.request.ProducerPostRequest;
 import org.yvesguilherme.response.ProducerGetResponse;
 import org.yvesguilherme.util.enums.AnimeEnum;
@@ -21,6 +22,8 @@ import java.util.concurrent.ThreadLocalRandom;
 @RequestMapping("producers")
 @Slf4j
 public class ProducerController {
+  private static final ProducerMapper PRODUCER_MAPPER = ProducerMapper.INSTANCE;
+
   @GetMapping
   public ResponseEntity<List<Producer>> listAll(@RequestParam(required = false) String name) {
     if (name == null) {
@@ -59,21 +62,10 @@ public class ProducerController {
       throw new BadRequestException("The property name is invalid!");
     }
 
-    var producer = Producer
-            .builder()
-            .id(ThreadLocalRandom.current().nextLong(100_000))
-            .name(producerPostRequest.getName())
-            .createdAt(LocalDateTime.now())
-            .build();
+    var producer = PRODUCER_MAPPER.toProducer(producerPostRequest);
+    var producerGetResponse = PRODUCER_MAPPER.toProducerGetResponse(producer);
 
     Producer.getProducers().add(producer);
-
-    var producerGetResponse = ProducerGetResponse
-            .builder()
-            .id(producer.getId())
-            .name(producer.getName())
-            .createdAt(producer.getCreatedAt())
-            .build();
 
     return new ResponseEntity<>(producerGetResponse, HttpStatus.CREATED);
   }
