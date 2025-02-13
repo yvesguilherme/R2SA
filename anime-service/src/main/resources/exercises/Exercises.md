@@ -25,3 +25,10 @@
 * [x] Atualize o AnimeController através da adição de um método que recebe um Anime JSON via POST
 * [x] Adiciona na lista existente de animes e retorna o objeto criado. Restrição: Caso o id seja passado na requisição, ele deve ser ignorado.
 * [x] Gere um id aleatoriamente antes de adicionar o objeto na lista
+
+### 4 - MapStruct
+
+<hr />
+
+* [x] Atualize todos os endpoints do **AnimeController** para utilizar classes diferentes para Requisição e Resposta.
+* [x] Você deve criar AnimePostRequest e AnimePostResponse para **POST** e AnimeGetResponse para **GET**

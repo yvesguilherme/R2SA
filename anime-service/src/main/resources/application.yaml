@@ -5,6 +5,10 @@ spring:
     virtual: # thread virtual que custa menos para o sistema operacional
       enabled: true
 
+logging:
+  level:
+    org.yvesguilherme: debug
+
 server:
   servlet:
 #    context-path: /${spring.application.name}/v1

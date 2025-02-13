@@ -1,13 +1,16 @@
 package org.yvesguilherme.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.yvesguilherme.domain.Anime;
 import org.yvesguilherme.exception.AnimeNotFoundException;
 import org.yvesguilherme.exception.BadRequestException;
+import org.yvesguilherme.mapper.AnimeMapper;
+import org.yvesguilherme.request.AnimePostRequest;
+import org.yvesguilherme.response.AnimeGetResponse;
+import org.yvesguilherme.response.AnimePostResponse;
 import org.yvesguilherme.util.Constants;
 import org.yvesguilherme.util.enums.AnimeEnum;
 
@@ -19,6 +22,8 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("animes")
 @Slf4j
 public class AnimeController {
+  private static final AnimeMapper ANIME_MAPPER = AnimeMapper.INSTANCE;
+
   @GetMapping("thread-test")
   public ResponseEntity<List<String>> listAll() throws InterruptedException {
     log.info(Thread.currentThread().getName());
@@ -27,41 +32,50 @@ public class AnimeController {
   }
 
   @GetMapping
-  public ResponseEntity<List<Anime>> listOfAnime(@RequestParam(required = false) String name) {
+  public ResponseEntity<List<AnimeGetResponse>> listOfAnime(@RequestParam(required = false) String name) {
+    log.debug("Request received to list all animes, param name '{}'", name);
+
+    List<AnimeGetResponse> listOfAnimeGetResponse = ANIME_MAPPER.toAnimeGetResponseList(Anime.getAnimes());
+
     if (name == null) {
-      return new ResponseEntity<>(Anime.getAnimes(), HttpStatus.OK);
+      return new ResponseEntity<>(listOfAnimeGetResponse, HttpStatus.OK);
     }
 
-    List<Anime> listOfAnime = Anime
-            .getAnimes()
+    List<AnimeGetResponse> animeGetResponseList = listOfAnimeGetResponse
             .stream()
             .filter(a -> a.getName().toLowerCase().contains(name.toLowerCase()))
             .toList();
 
-    return new ResponseEntity<>(listOfAnime, HttpStatus.OK);
+    return new ResponseEntity<>(animeGetResponseList, HttpStatus.OK);
   }
 
   @GetMapping("{id}")
-  public ResponseEntity<Anime> findById(@PathVariable Long id) {
+  public ResponseEntity<AnimeGetResponse> findById(@PathVariable Long id) {
+    log.debug("Request to find anime by id: {}", id);
+
     return Anime
             .getAnimes()
             .stream()
             .filter(a -> a.getId().equals(id))
             .findFirst()
+            .map(ANIME_MAPPER::toAnimeGetResponse)
             .map(ResponseEntity::ok)
             .orElseThrow(() -> new AnimeNotFoundException(AnimeEnum.NOT_FOUND.getMessage()));
   }
 
   @PostMapping
-  public ResponseEntity<Anime> save(@RequestBody Anime anime) {
-    if (anime.getName().isEmpty()) {
+  public ResponseEntity<AnimePostResponse> save(@RequestBody AnimePostRequest animePostRequest) {
+    if (animePostRequest.getName().isEmpty()) {
       throw new BadRequestException("The property name is invalid!");
     }
 
-    anime.setId(ThreadLocalRandom.current().nextLong(100_000));
+    var anime = ANIME_MAPPER.toAnime(animePostRequest);
+
     Anime.getAnimes().add(anime);
 
-    return new ResponseEntity<>(anime, HttpStatus.CREATED);
+    var animeResponse = ANIME_MAPPER.toAnimePostResponse(anime);
+
+    return new ResponseEntity<>(animeResponse, HttpStatus.CREATED);
   }
 
 }
