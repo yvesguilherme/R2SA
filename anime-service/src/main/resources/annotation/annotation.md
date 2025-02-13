@@ -13,7 +13,7 @@
 - Object -> JSON   = GET
 - JSON   -> Object = SET
 
-### Idempotente
+### Idempotente - RFC 7231
 Um método HTTP é idempotente se uma requisição idêntica pode ser feita uma ou mais vezes em sequência com o mesmo efeito enquanto deixa o servidor no mesmo estado. Em outras palavras, um método idempotente não deveria possuir nenhum efeito colateral (exceto para manter estatísticas).
 
 - **GET, HEAD, PUT, e DELETE** são métodos idempotente

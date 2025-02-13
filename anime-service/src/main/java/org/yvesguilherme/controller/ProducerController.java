@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.yvesguilherme.domain.Producer;
 import org.yvesguilherme.exception.AnimeNotFoundException;
 import org.yvesguilherme.exception.BadRequestException;
@@ -13,10 +14,9 @@ import org.yvesguilherme.mapper.ProducerMapper;
 import org.yvesguilherme.request.ProducerPostRequest;
 import org.yvesguilherme.response.ProducerGetResponse;
 import org.yvesguilherme.util.enums.AnimeEnum;
+import org.yvesguilherme.util.enums.ProducerEnum;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 @RestController
 @RequestMapping("producers")
@@ -28,13 +28,13 @@ public class ProducerController {
   public ResponseEntity<List<ProducerGetResponse>> listAll(@RequestParam(required = false) String name) {
     log.debug("Request to list all producers, param name: '{}'", name);
 
-    List<ProducerGetResponse> ListOfProducerGetResponse = PRODUCER_MAPPER.toProducerGetResponseList(Producer.getProducers());
+    List<ProducerGetResponse> listOfProducerGetResponse = PRODUCER_MAPPER.toProducerGetResponseList(Producer.getProducers());
 
     if (name == null) {
-      return new ResponseEntity<>(ListOfProducerGetResponse, HttpStatus.OK);
+      return new ResponseEntity<>(listOfProducerGetResponse, HttpStatus.OK);
     }
 
-    List<ProducerGetResponse> listOfProducers = ListOfProducerGetResponse
+    List<ProducerGetResponse> listOfProducers = listOfProducerGetResponse
             .stream()
             .filter(a -> a.getName().toLowerCase().contains(name.toLowerCase()))
             .toList();
@@ -53,7 +53,7 @@ public class ProducerController {
             .findFirst()
             .map(PRODUCER_MAPPER::toProducerGetResponse)
             .map(ResponseEntity::ok)
-            .orElseThrow(() -> new AnimeNotFoundException(AnimeEnum.NOT_FOUND.getMessage()));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ProducerEnum.NOT_FOUND.getMessage()));
   }
 
   @PostMapping(
@@ -74,6 +74,22 @@ public class ProducerController {
     Producer.getProducers().add(producer);
 
     return new ResponseEntity<>(producerGetResponse, HttpStatus.CREATED);
+  }
+
+  @DeleteMapping("{id}")
+  public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    log.debug("Request to delete producer by id: {}", id);
+
+    Producer producerToDelete = Producer
+            .getProducers()
+            .stream()
+            .filter(a -> a.getId().equals(id))
+            .findFirst()
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ProducerEnum.NOT_FOUND.getMessage()));
+
+    Producer.getProducers().remove(producerToDelete);
+
+    return ResponseEntity.noContent().build();
   }
 
 }

@@ -80,4 +80,20 @@ public class AnimeController {
     return new ResponseEntity<>(animeResponse, HttpStatus.CREATED);
   }
 
+  @DeleteMapping("{id}")
+  public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    log.debug("Request to delete anime by id: {}", id);
+
+    Anime animeToDelete = Anime
+            .getAnimes()
+            .stream()
+            .filter(a -> a.getId().equals(id))
+            .findFirst()
+            .orElseThrow(() -> new AnimeNotFoundException(AnimeEnum.NOT_FOUND.getMessage()));
+
+    Anime.getAnimes().remove(animeToDelete);
+
+    return ResponseEntity.noContent().build();
+  }
+
 }

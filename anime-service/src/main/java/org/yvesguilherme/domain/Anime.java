@@ -10,8 +10,9 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Anime {
+  @EqualsAndHashCode.Include
   private Long id;
 
   @NonNull
