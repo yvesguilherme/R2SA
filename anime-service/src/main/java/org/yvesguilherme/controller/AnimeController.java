@@ -65,6 +65,8 @@ public class AnimeController {
 
   @PostMapping
   public ResponseEntity<AnimePostResponse> save(@RequestBody AnimePostRequest animePostRequest) {
+    log.debug("Request to save anime: {}", animePostRequest);
+
     if (animePostRequest.getName().isEmpty()) {
       throw new BadRequestException("The property name is invalid!");
     }

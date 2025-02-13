@@ -25,13 +25,16 @@ public class ProducerController {
   private static final ProducerMapper PRODUCER_MAPPER = ProducerMapper.INSTANCE;
 
   @GetMapping
-  public ResponseEntity<List<Producer>> listAll(@RequestParam(required = false) String name) {
+  public ResponseEntity<List<ProducerGetResponse>> listAll(@RequestParam(required = false) String name) {
+    log.debug("Request to list all producers, param name: '{}'", name);
+
+    List<ProducerGetResponse> ListOfProducerGetResponse = PRODUCER_MAPPER.toProducerGetResponseList(Producer.getProducers());
+
     if (name == null) {
-      return new ResponseEntity<>(Producer.getProducers(), HttpStatus.OK);
+      return new ResponseEntity<>(ListOfProducerGetResponse, HttpStatus.OK);
     }
 
-    List<Producer> listOfProducers = Producer
-            .getProducers()
+    List<ProducerGetResponse> listOfProducers = ListOfProducerGetResponse
             .stream()
             .filter(a -> a.getName().toLowerCase().contains(name.toLowerCase()))
             .toList();
@@ -40,12 +43,15 @@ public class ProducerController {
   }
 
   @GetMapping("{id}")
-  public ResponseEntity<Producer> findById(@PathVariable Long id) {
+  public ResponseEntity<ProducerGetResponse> findById(@PathVariable Long id) {
+    log.debug("Request to find producer by id: {}", id);
+
     return Producer
             .getProducers()
             .stream()
             .filter(a -> a.getId().equals(id))
             .findFirst()
+            .map(PRODUCER_MAPPER::toProducerGetResponse)
             .map(ResponseEntity::ok)
             .orElseThrow(() -> new AnimeNotFoundException(AnimeEnum.NOT_FOUND.getMessage()));
   }
