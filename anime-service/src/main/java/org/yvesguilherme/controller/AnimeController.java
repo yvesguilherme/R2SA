@@ -11,11 +11,11 @@ import org.yvesguilherme.mapper.AnimeMapper;
 import org.yvesguilherme.request.AnimePostRequest;
 import org.yvesguilherme.response.AnimeGetResponse;
 import org.yvesguilherme.response.AnimePostResponse;
+import org.yvesguilherme.request.AnimePutRequest;
 import org.yvesguilherme.util.Constants;
 import org.yvesguilherme.util.enums.AnimeEnum;
 
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -92,6 +92,24 @@ public class AnimeController {
             .orElseThrow(() -> new AnimeNotFoundException(AnimeEnum.NOT_FOUND.getMessage()));
 
     Anime.getAnimes().remove(animeToDelete);
+
+    return ResponseEntity.noContent().build();
+  }
+
+  @PutMapping
+  public ResponseEntity<Void> update(@RequestBody AnimePutRequest animePutRequest) {
+    log.debug("Request to update anime: {}", animePutRequest);
+
+    Anime animeToRemove = Anime
+            .getAnimes()
+            .stream()
+            .filter(a -> a.getId().equals(animePutRequest.getId()))
+            .findFirst()
+            .orElseThrow(() -> new AnimeNotFoundException(AnimeEnum.NOT_FOUND.getMessage()));
+
+    Anime animeUpdated = ANIME_MAPPER.toAnime(animePutRequest);
+    Anime.getAnimes().remove(animeToRemove);
+    Anime.getAnimes().add(animeUpdated);
 
     return ResponseEntity.noContent().build();
   }
