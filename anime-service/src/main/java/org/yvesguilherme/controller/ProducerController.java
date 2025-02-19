@@ -7,15 +7,19 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.yvesguilherme.domain.Anime;
 import org.yvesguilherme.domain.Producer;
 import org.yvesguilherme.exception.AnimeNotFoundException;
 import org.yvesguilherme.exception.BadRequestException;
 import org.yvesguilherme.mapper.ProducerMapper;
+import org.yvesguilherme.request.AnimePutRequest;
 import org.yvesguilherme.request.ProducerPostRequest;
+import org.yvesguilherme.request.ProducerPutRequest;
 import org.yvesguilherme.response.ProducerGetResponse;
 import org.yvesguilherme.util.enums.AnimeEnum;
 import org.yvesguilherme.util.enums.ProducerEnum;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -88,6 +92,25 @@ public class ProducerController {
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ProducerEnum.NOT_FOUND.getMessage()));
 
     Producer.getProducers().remove(producerToDelete);
+
+    return ResponseEntity.noContent().build();
+  }
+
+  @PutMapping
+  public ResponseEntity<Void> update(@RequestBody ProducerPutRequest producerPutRequest) {
+    log.debug("Request to update producer: {}", producerPutRequest);
+
+    Producer animeToRemove = Producer
+            .getProducers()
+            .stream()
+            .filter(a -> a.getId().equals(producerPutRequest.getId()))
+            .findFirst()
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ProducerEnum.NOT_FOUND.getMessage()));
+
+    Producer producerUpdated = PRODUCER_MAPPER.toProducer(producerPutRequest);
+    producerUpdated.setCreatedAt(LocalDateTime.now());
+    Producer.getProducers().remove(animeToRemove);
+    Producer.getProducers().add(producerUpdated);
 
     return ResponseEntity.noContent().build();
   }
