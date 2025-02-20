@@ -100,16 +100,15 @@ public class ProducerController {
   public ResponseEntity<Void> update(@RequestBody ProducerPutRequest producerPutRequest) {
     log.debug("Request to update producer: {}", producerPutRequest);
 
-    Producer animeToRemove = Producer
+    Producer producerToRemove = Producer
             .getProducers()
             .stream()
             .filter(a -> a.getId().equals(producerPutRequest.getId()))
             .findFirst()
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ProducerEnum.NOT_FOUND.getMessage()));
 
-    Producer producerUpdated = PRODUCER_MAPPER.toProducer(producerPutRequest);
-    producerUpdated.setCreatedAt(LocalDateTime.now());
-    Producer.getProducers().remove(animeToRemove);
+    Producer producerUpdated = PRODUCER_MAPPER.toProducer(producerPutRequest, producerToRemove.getCreatedAt());
+    Producer.getProducers().remove(producerToRemove);
     Producer.getProducers().add(producerUpdated);
 
     return ResponseEntity.noContent().build();

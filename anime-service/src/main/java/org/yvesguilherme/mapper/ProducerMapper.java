@@ -8,6 +8,7 @@ import org.yvesguilherme.request.ProducerPostRequest;
 import org.yvesguilherme.request.ProducerPutRequest;
 import org.yvesguilherme.response.ProducerGetResponse;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -22,7 +23,7 @@ public interface ProducerMapper {
   @Mapping(target = "id", expression = "java(java.util.concurrent.ThreadLocalRandom.current().nextLong(100_000))")
   Producer toProducer(ProducerPostRequest postRequest);
 
-  Producer toProducer(ProducerPutRequest producerPutRequest);
+  Producer toProducer(ProducerPutRequest producerPutRequest, LocalDateTime createdAt);
 
   ProducerGetResponse toProducerGetResponse(Producer producer);
 
