@@ -16,6 +16,7 @@ import org.yvesguilherme.request.AnimePutRequest;
 import org.yvesguilherme.request.ProducerPostRequest;
 import org.yvesguilherme.request.ProducerPutRequest;
 import org.yvesguilherme.response.ProducerGetResponse;
+import org.yvesguilherme.service.ProducerService;
 import org.yvesguilherme.util.enums.AnimeEnum;
 import org.yvesguilherme.util.enums.ProducerEnum;
 
@@ -27,37 +28,30 @@ import java.util.List;
 @Slf4j
 public class ProducerController {
   private static final ProducerMapper PRODUCER_MAPPER = ProducerMapper.INSTANCE;
+  private ProducerService producerService;
+
+  private ProducerController(){
+    this.producerService = new ProducerService();
+  }
 
   @GetMapping
   public ResponseEntity<List<ProducerGetResponse>> listAll(@RequestParam(required = false) String name) {
     log.debug("Request to list all producers, param name: '{}'", name);
 
-    List<ProducerGetResponse> listOfProducerGetResponse = PRODUCER_MAPPER.toProducerGetResponseList(Producer.getProducers());
+    var producers = producerService.findAll(name);
+    var producerGetResponseList = PRODUCER_MAPPER.toProducerGetResponseList(producers);
 
-    if (name == null) {
-      return new ResponseEntity<>(listOfProducerGetResponse, HttpStatus.OK);
-    }
-
-    List<ProducerGetResponse> listOfProducers = listOfProducerGetResponse
-            .stream()
-            .filter(a -> a.getName().toLowerCase().contains(name.toLowerCase()))
-            .toList();
-
-    return new ResponseEntity<>(listOfProducers, HttpStatus.OK);
+    return ResponseEntity.ok(producerGetResponseList);
   }
 
   @GetMapping("{id}")
   public ResponseEntity<ProducerGetResponse> findById(@PathVariable Long id) {
     log.debug("Request to find producer by id: {}", id);
 
-    return Producer
-            .getProducers()
-            .stream()
-            .filter(a -> a.getId().equals(id))
-            .findFirst()
-            .map(PRODUCER_MAPPER::toProducerGetResponse)
-            .map(ResponseEntity::ok)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ProducerEnum.NOT_FOUND.getMessage()));
+    var producer = producerService.findByIdOrThrowNotFound(id);
+    var producerGetResponse = PRODUCER_MAPPER.toProducerGetResponse(producer);
+
+    return ResponseEntity.ok(producerGetResponse);
   }
 
   @PostMapping(
@@ -68,30 +62,18 @@ public class ProducerController {
   public ResponseEntity<ProducerGetResponse> save(@RequestBody ProducerPostRequest producerPostRequest, @RequestHeader HttpHeaders httpHeaders) {
     log.info("{}", httpHeaders);
 
-    if (producerPostRequest.getName().isEmpty()) {
-      throw new BadRequestException("The property name is invalid!");
-    }
-
     var producer = PRODUCER_MAPPER.toProducer(producerPostRequest);
-    var producerGetResponse = PRODUCER_MAPPER.toProducerGetResponse(producer);
+    var producerSaved = producerService.save(producer);
+    var producerGetResponse = PRODUCER_MAPPER.toProducerGetResponse(producerSaved);
 
-    Producer.getProducers().add(producer);
-
-    return new ResponseEntity<>(producerGetResponse, HttpStatus.CREATED);
+    return ResponseEntity.ok(producerGetResponse);
   }
 
   @DeleteMapping("{id}")
   public ResponseEntity<Void> deleteById(@PathVariable Long id) {
     log.debug("Request to delete producer by id: {}", id);
 
-    Producer producerToDelete = Producer
-            .getProducers()
-            .stream()
-            .filter(a -> a.getId().equals(id))
-            .findFirst()
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ProducerEnum.NOT_FOUND.getMessage()));
-
-    Producer.getProducers().remove(producerToDelete);
+    producerService.delete(id);
 
     return ResponseEntity.noContent().build();
   }
@@ -100,16 +82,9 @@ public class ProducerController {
   public ResponseEntity<Void> update(@RequestBody ProducerPutRequest producerPutRequest) {
     log.debug("Request to update producer: {}", producerPutRequest);
 
-    Producer producerToRemove = Producer
-            .getProducers()
-            .stream()
-            .filter(a -> a.getId().equals(producerPutRequest.getId()))
-            .findFirst()
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ProducerEnum.NOT_FOUND.getMessage()));
+    var producerToUpdate = PRODUCER_MAPPER.toProducer(producerPutRequest);
 
-    Producer producerUpdated = PRODUCER_MAPPER.toProducer(producerPutRequest, producerToRemove.getCreatedAt());
-    Producer.getProducers().remove(producerToRemove);
-    Producer.getProducers().add(producerUpdated);
+    producerService.update(producerToUpdate);
 
     return ResponseEntity.noContent().build();
   }
