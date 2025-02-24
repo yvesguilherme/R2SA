@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
-@ToString
 @EqualsAndHashCode
 public class Producer {
   private Long id;

@@ -7,6 +7,7 @@ import org.yvesguilherme.domain.Producer;
 import org.yvesguilherme.request.ProducerPostRequest;
 import org.yvesguilherme.request.ProducerPutRequest;
 import org.yvesguilherme.response.ProducerGetResponse;
+import org.yvesguilherme.response.ProducerPostResponse;
 
 import java.util.List;
 
@@ -25,6 +26,8 @@ public interface ProducerMapper {
   Producer toProducer(ProducerPutRequest producerPutRequest);
 
   ProducerGetResponse toProducerGetResponse(Producer producer);
+
+  ProducerPostResponse toProducerPostResponse(Producer producer);
 
   List<ProducerGetResponse> toProducerGetResponseList(List<Producer> producerList);
 

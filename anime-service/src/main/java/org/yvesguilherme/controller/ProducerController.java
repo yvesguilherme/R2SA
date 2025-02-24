@@ -2,25 +2,16 @@ package org.yvesguilherme.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-import org.yvesguilherme.domain.Anime;
-import org.yvesguilherme.domain.Producer;
-import org.yvesguilherme.exception.AnimeNotFoundException;
-import org.yvesguilherme.exception.BadRequestException;
 import org.yvesguilherme.mapper.ProducerMapper;
-import org.yvesguilherme.request.AnimePutRequest;
 import org.yvesguilherme.request.ProducerPostRequest;
 import org.yvesguilherme.request.ProducerPutRequest;
 import org.yvesguilherme.response.ProducerGetResponse;
+import org.yvesguilherme.response.ProducerPostResponse;
 import org.yvesguilherme.service.ProducerService;
-import org.yvesguilherme.util.enums.AnimeEnum;
-import org.yvesguilherme.util.enums.ProducerEnum;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -30,7 +21,7 @@ public class ProducerController {
   private static final ProducerMapper PRODUCER_MAPPER = ProducerMapper.INSTANCE;
   private ProducerService producerService;
 
-  private ProducerController(){
+  private ProducerController() {
     this.producerService = new ProducerService();
   }
 
@@ -59,14 +50,14 @@ public class ProducerController {
           consumes = MediaType.APPLICATION_JSON_VALUE,
           headers = "x-api-key=1234"
   )
-  public ResponseEntity<ProducerGetResponse> save(@RequestBody ProducerPostRequest producerPostRequest, @RequestHeader HttpHeaders httpHeaders) {
+  public ResponseEntity<ProducerPostResponse> save(@RequestBody ProducerPostRequest producerPostRequest, @RequestHeader HttpHeaders httpHeaders) {
     log.info("{}", httpHeaders);
 
     var producer = PRODUCER_MAPPER.toProducer(producerPostRequest);
     var producerSaved = producerService.save(producer);
-    var producerGetResponse = PRODUCER_MAPPER.toProducerGetResponse(producerSaved);
+    var producerPostResponse = PRODUCER_MAPPER.toProducerPostResponse(producerSaved);
 
-    return ResponseEntity.ok(producerGetResponse);
+    return ResponseEntity.ok(producerPostResponse);
   }
 
   @DeleteMapping("{id}")

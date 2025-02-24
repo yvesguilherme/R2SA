@@ -1,6 +1,5 @@
 package org.yvesguilherme.util;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Constants {
@@ -15,11 +14,5 @@ public class Constants {
           "Jujutsu Kaisen",
           "Gintama': Enchousen",
           "Demon Slayer: Kimetsu no Yaiba"
-  );
-
-  public static final List<String> PRODUCERS = List.of(
-          "Mappa",
-          "Kyoto Animation",
-          "Madhouse"
   );
 }
