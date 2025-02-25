@@ -21,3 +21,14 @@ Um método HTTP é idempotente se uma requisição idêntica pode ser feita uma 
 
 ### Desacoplar o código
 - O código de domínio nunca deve ser exposto para os clientes e/ou outros sistemas
+
+### Injeção de dependência
+- Quando o Spring cria o objeto para nós.
+
+### Spring bean
+- Objeto gerenciado pelo spring, o spring precisa reconhecer a classe como um Bean, e isso se dá através da anotação ```@Component```;
+- Por qual motivo não utilizar o ```@Autowired``` e sim um construtor com argumentos?
+  - Imutabilidade ```final``` na declaração do atributo;
+    - Se tiver usando Lombok: ```@RequiredArgsConstructor```, cria um construtor com todos os atributos final;
+  - Facilidade com os testes unitários;
+  - Princípio da responsabilidade única.

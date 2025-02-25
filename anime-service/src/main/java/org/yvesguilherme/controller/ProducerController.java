@@ -1,6 +1,8 @@
 package org.yvesguilherme.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +19,11 @@ import java.util.List;
 @RestController
 @RequestMapping("producers")
 @Slf4j
+@RequiredArgsConstructor
 public class ProducerController {
   private static final ProducerMapper PRODUCER_MAPPER = ProducerMapper.INSTANCE;
-  private ProducerService producerService;
 
-  private ProducerController() {
-    this.producerService = new ProducerService();
-  }
+  private final ProducerService producerService;
 
   @GetMapping
   public ResponseEntity<List<ProducerGetResponse>> listAll(@RequestParam(required = false) String name) {

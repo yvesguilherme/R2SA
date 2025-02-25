@@ -1,6 +1,9 @@
 package org.yvesguilherme.service;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.yvesguilherme.domain.Producer;
 import org.yvesguilherme.exception.BadRequestException;
@@ -9,12 +12,10 @@ import org.yvesguilherme.util.enums.ProducerEnum;
 
 import java.util.List;
 
+@Service
+@RequiredArgsConstructor
 public class ProducerService {
   private final ProducerHardCodedRepository producerHardCodedRepository;
-
-  public ProducerService() {
-    this.producerHardCodedRepository = new ProducerHardCodedRepository();
-  }
 
   public List<Producer> findAll(String name) {
     return name == null ? producerHardCodedRepository.findAll() : producerHardCodedRepository.findByName(name);

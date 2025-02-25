@@ -1,5 +1,6 @@
 package org.yvesguilherme.repository;
 
+import org.springframework.stereotype.Repository;
 import org.yvesguilherme.domain.Producer;
 
 import java.time.LocalDateTime;
@@ -7,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class ProducerHardCodedRepository {
   private static final List<Producer> PRODUCERS = new ArrayList<>();
 
