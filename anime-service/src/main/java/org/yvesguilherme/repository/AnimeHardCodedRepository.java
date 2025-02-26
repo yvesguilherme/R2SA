@@ -1,11 +1,13 @@
 package org.yvesguilherme.repository;
 
+import org.springframework.stereotype.Repository;
 import org.yvesguilherme.domain.Anime;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class AnimeHardCodedRepository {
   private static final List<Anime> ANIMES = new ArrayList<>();
 

@@ -2,7 +2,7 @@ package org.yvesguilherme.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.MappingConstants;
 import org.yvesguilherme.domain.Producer;
 import org.yvesguilherme.request.ProducerPostRequest;
 import org.yvesguilherme.request.ProducerPutRequest;
@@ -11,10 +11,8 @@ import org.yvesguilherme.response.ProducerPostResponse;
 
 import java.util.List;
 
-@Mapper
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ProducerMapper {
-  ProducerMapper INSTANCE = Mappers.getMapper(ProducerMapper.class);
-
   /**
    * Source está no parâmetro (ProducerPostRequest)
    * Target está no que você irá retornar (Producer)

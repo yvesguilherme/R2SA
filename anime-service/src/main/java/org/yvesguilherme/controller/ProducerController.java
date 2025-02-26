@@ -2,7 +2,6 @@ package org.yvesguilherme.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +20,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class ProducerController {
-  private static final ProducerMapper PRODUCER_MAPPER = ProducerMapper.INSTANCE;
-
+  private final ProducerMapper producerMapper;
   private final ProducerService producerService;
 
   @GetMapping
@@ -30,7 +28,7 @@ public class ProducerController {
     log.debug("Request to list all producers, param name: '{}'", name);
 
     var producers = producerService.findAll(name);
-    var producerGetResponseList = PRODUCER_MAPPER.toProducerGetResponseList(producers);
+    var producerGetResponseList = producerMapper.toProducerGetResponseList(producers);
 
     return ResponseEntity.ok(producerGetResponseList);
   }
@@ -40,7 +38,7 @@ public class ProducerController {
     log.debug("Request to find producer by id: {}", id);
 
     var producer = producerService.findByIdOrThrowNotFound(id);
-    var producerGetResponse = PRODUCER_MAPPER.toProducerGetResponse(producer);
+    var producerGetResponse = producerMapper.toProducerGetResponse(producer);
 
     return ResponseEntity.ok(producerGetResponse);
   }
@@ -53,9 +51,9 @@ public class ProducerController {
   public ResponseEntity<ProducerPostResponse> save(@RequestBody ProducerPostRequest producerPostRequest, @RequestHeader HttpHeaders httpHeaders) {
     log.info("{}", httpHeaders);
 
-    var producer = PRODUCER_MAPPER.toProducer(producerPostRequest);
+    var producer = producerMapper.toProducer(producerPostRequest);
     var producerSaved = producerService.save(producer);
-    var producerPostResponse = PRODUCER_MAPPER.toProducerPostResponse(producerSaved);
+    var producerPostResponse = producerMapper.toProducerPostResponse(producerSaved);
 
     return ResponseEntity.ok(producerPostResponse);
   }
@@ -73,7 +71,7 @@ public class ProducerController {
   public ResponseEntity<Void> update(@RequestBody ProducerPutRequest producerPutRequest) {
     log.debug("Request to update producer: {}", producerPutRequest);
 
-    var producerToUpdate = PRODUCER_MAPPER.toProducer(producerPutRequest);
+    var producerToUpdate = producerMapper.toProducer(producerPutRequest);
 
     producerService.update(producerToUpdate);
 

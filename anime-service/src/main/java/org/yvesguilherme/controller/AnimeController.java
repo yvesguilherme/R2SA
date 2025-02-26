@@ -1,5 +1,6 @@
 package org.yvesguilherme.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +19,10 @@ import java.util.concurrent.TimeUnit;
 @RestController
 @RequestMapping("animes")
 @Slf4j
+@RequiredArgsConstructor
 public class AnimeController {
-  private static final AnimeMapper ANIME_MAPPER = AnimeMapper.INSTANCE;
+  private final AnimeMapper animeMapper;
   private final AnimeService animeService;
-
-  private AnimeController() {
-    this.animeService = new AnimeService();
-  }
 
   @GetMapping("thread-test")
   public ResponseEntity<List<String>> listAll() throws InterruptedException {
@@ -38,7 +36,7 @@ public class AnimeController {
     log.debug("Request received to list all animes, param name '{}'", name);
 
     var listOfAnime = animeService.findAll(name);
-    var listOfAnimeGetResponse = ANIME_MAPPER.toAnimeGetResponseList(listOfAnime);
+    var listOfAnimeGetResponse = animeMapper.toAnimeGetResponseList(listOfAnime);
 
     return ResponseEntity.ok(listOfAnimeGetResponse);
   }
@@ -48,7 +46,7 @@ public class AnimeController {
     log.debug("Request to find anime by id: {}", id);
 
     var anime = animeService.findByIdOrThrowNotFound(id);
-    var animeGetResponse = ANIME_MAPPER.toAnimeGetResponse(anime);
+    var animeGetResponse = animeMapper.toAnimeGetResponse(anime);
 
     return ResponseEntity.ok(animeGetResponse);
   }
@@ -57,9 +55,9 @@ public class AnimeController {
   public ResponseEntity<AnimePostResponse> save(@RequestBody AnimePostRequest animePostRequest) {
     log.debug("Request to save anime: {}", animePostRequest);
 
-    var anime = ANIME_MAPPER.toAnime(animePostRequest);
+    var anime = animeMapper.toAnime(animePostRequest);
     var animeSaved = animeService.save(anime);
-    var animePostResponse = ANIME_MAPPER.toAnimePostResponse(animeSaved);
+    var animePostResponse = animeMapper.toAnimePostResponse(animeSaved);
 
     return ResponseEntity.ok(animePostResponse);
   }
@@ -77,7 +75,7 @@ public class AnimeController {
   public ResponseEntity<Void> update(@RequestBody AnimePutRequest animePutRequest) {
     log.debug("Request to update anime: {}", animePutRequest);
 
-    var animeUpdated = ANIME_MAPPER.toAnime(animePutRequest);
+    var animeUpdated = animeMapper.toAnime(animePutRequest);
 
     animeService.update(animeUpdated);
 

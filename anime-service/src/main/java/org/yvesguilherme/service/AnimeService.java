@@ -1,6 +1,8 @@
 package org.yvesguilherme.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.yvesguilherme.domain.Anime;
 import org.yvesguilherme.exception.BadRequestException;
@@ -9,12 +11,10 @@ import org.yvesguilherme.util.enums.ProducerEnum;
 
 import java.util.List;
 
+@Service
+@RequiredArgsConstructor
 public class AnimeService {
   private final AnimeHardCodedRepository animeHardCodedRepository;
-
-  public AnimeService() {
-    this.animeHardCodedRepository = new AnimeHardCodedRepository();
-  }
 
   public List<Anime> findAll(String name) {
     return name == null ? animeHardCodedRepository.findAll() : animeHardCodedRepository.findByName(name);
