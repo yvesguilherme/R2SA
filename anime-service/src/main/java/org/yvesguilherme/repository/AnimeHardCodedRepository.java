@@ -1,5 +1,8 @@
 package org.yvesguilherme.repository;
 
+import external.dependency.Connection;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Repository;
 import org.yvesguilherme.domain.Anime;
 
@@ -8,8 +11,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@RequiredArgsConstructor
+@Log4j2
 public class AnimeHardCodedRepository {
   private static final List<Anime> ANIMES = new ArrayList<>();
+  private final Connection connection;
 
   static {
     var ninja = Anime.builder().name("Ninja Kamui").id(1L).build();
@@ -24,6 +30,7 @@ public class AnimeHardCodedRepository {
   }
 
   public List<Anime> findAll() {
+    log.debug(connection);
     return ANIMES;
   }
 
