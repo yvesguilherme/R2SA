@@ -32,3 +32,12 @@ Um método HTTP é idempotente se uma requisição idêntica pode ser feita uma 
     - Se tiver usando Lombok: ```@RequiredArgsConstructor```, cria um construtor com todos os atributos final;
   - Facilidade com os testes unitários;
   - Princípio da responsabilidade única.
+
+### Tests
+* ```@ExtendWith(SpringExtension.class)```: Use esta anotação com a classe **SpringExtension** quando você quer usar as funcionalidades do Spring.
+* ```@ExtendWith(MockitoExtension.class)```: Use esta anotação com a classe **MockitoExtension** quando você quer mocar os dados que estão fora da classe do teste.
+* ```@InjectMocks```: Cria o objeto anotado, pois dentro da classe de testes não temos o Spring.
+* ```@DisplayName("findAll returns a list with all producers")```: Serve para facilitar a descrição do teste.
+* ```@Mock```: Serve para dar o comportamento de mock para o objeto, pois se não der comportamento será ```null```.
+
+  
