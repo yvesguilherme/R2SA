@@ -8,8 +8,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Producer {
+  @EqualsAndHashCode.Include
   private Long id;
 
   @NonNull

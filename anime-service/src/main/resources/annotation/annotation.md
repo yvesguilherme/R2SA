@@ -39,5 +39,6 @@ Um método HTTP é idempotente se uma requisição idêntica pode ser feita uma 
 * ```@InjectMocks```: Cria o objeto anotado, pois dentro da classe de testes não temos o Spring.
 * ```@DisplayName("findAll returns a list with all producers")```: Serve para facilitar a descrição do teste.
 * ```@Mock```: Serve para dar o comportamento de mock para o objeto, pois se não der comportamento será ```null```.
+* ```@Order(n)```: Serve para deixar explícito em qual ordem será realizado aquele teste, porém é necessário também adicionar a anotação ```@TestMethodOrder(MethodOrderer.OrderAnnotation.class)``` na classe.
 
   

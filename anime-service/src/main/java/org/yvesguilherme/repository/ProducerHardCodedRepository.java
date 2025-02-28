@@ -37,7 +37,7 @@ public class ProducerHardCodedRepository {
   public List<Producer> findByName(String name) {
     return producerData.getProducers()
             .stream()
-            .filter(a -> a.getName().toLowerCase().contains(name.toLowerCase()))
+            .filter(a -> a.getName().equalsIgnoreCase(name))
             .toList();
   }
 

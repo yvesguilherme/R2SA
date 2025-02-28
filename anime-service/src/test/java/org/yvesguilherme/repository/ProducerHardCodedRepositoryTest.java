@@ -1,9 +1,7 @@
 package org.yvesguilherme.repository;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
@@ -19,6 +17,7 @@ import java.util.List;
  * Use esta anotação quando você quer usar as funcionalidades do Spring.
  */
 @ExtendWith(MockitoExtension.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ProducerHardCodedRepositoryTest {
 
   @InjectMocks
@@ -41,6 +40,7 @@ class ProducerHardCodedRepositoryTest {
 
   @Test
   @DisplayName("findAll returns a list with all producers")
+  @Order(1)
   void findAllReturnsAllProducersWhenSuccessfull() {
     BDDMockito.when(producerData.getProducers()).thenReturn(producerList);
 
@@ -50,6 +50,47 @@ class ProducerHardCodedRepositoryTest {
             .assertThat(producers)
             .isNotNull()
             .isNotEmpty()
-            .hasSize(producerList.size());
+            .hasSameElementsAs(producerList);
+  }
+
+  @Test
+  @DisplayName("findById returns a producer with given id")
+  void findByIdReturnsProducerByIdWhenSuccessfull() {
+    BDDMockito.when(producerData.getProducers()).thenReturn(producerList);
+
+    var expectedProducer = producerList.getFirst();
+
+    var producers = repository.findById(expectedProducer.getId());
+
+    Assertions
+            .assertThat(producers)
+            .isPresent()
+            .contains(expectedProducer);
+  }
+
+  @Test
+  @DisplayName("findByName returns empty list when name is null")
+  void findByNameReturnsEmptyListWhenNameIsNull() {
+    BDDMockito.when(producerData.getProducers()).thenReturn(producerList);
+
+    var producers = repository.findByName(null);
+
+    Assertions
+            .assertThat(producers)
+            .isNotNull()
+            .isEmpty();
+  }
+
+  @Test
+  @DisplayName("findByName returns a list with found object when name exists")
+  void findByNameReturnsAListWithFoundObjectWhenNameExists() {
+    BDDMockito.when(producerData.getProducers()).thenReturn(producerList);
+
+    var expectedProducer = producerData.getProducers().getFirst();
+    var producers = repository.findByName(expectedProducer.getName());
+
+    Assertions
+            .assertThat(producers)
+            .contains(expectedProducer);
   }
 }
