@@ -103,7 +103,7 @@ class AnimeHardCodedRepositoryTest {
     BDDMockito.when(animeData.getAnimeList()).thenReturn(animeList);
 
     var animeToUpdate = animeData.getAnimeList().getFirst();
-    animeToUpdate.setName("Dragonball Z");
+    animeToUpdate.setName("Dragon Ball Z");
 
     repository.update(animeToUpdate);
 
