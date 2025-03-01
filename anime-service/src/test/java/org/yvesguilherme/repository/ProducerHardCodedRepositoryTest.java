@@ -61,10 +61,10 @@ class ProducerHardCodedRepositoryTest {
 
     var expectedProducer = producerList.getFirst();
 
-    var producers = repository.findById(expectedProducer.getId());
+    var producer = repository.findById(expectedProducer.getId());
 
     Assertions
-            .assertThat(producers)
+            .assertThat(producer)
             .isPresent()
             .contains(expectedProducer);
   }
