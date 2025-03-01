@@ -34,6 +34,8 @@ Um método HTTP é idempotente se uma requisição idêntica pode ser feita uma 
   - Princípio da responsabilidade única.
 
 ### Tests
+#### Cobertura de testes é importante, mas talvez seja mais importante ter uma quantidade de cenários diferentes como: ```sunny day``` verificar se a lógica está funcionando e ```rainy day``` o que aconteceria se as coisas não estiverem conforme você espera.
+#### Exemplo: Artigo [Use case testing](https://www.softwaretestinghelp.com/use-case-testing/)
 * ```@ExtendWith(SpringExtension.class)```: Use esta anotação com a classe **SpringExtension** quando você quer usar as funcionalidades do Spring.
 * ```@ExtendWith(MockitoExtension.class)```: Use esta anotação com a classe **MockitoExtension** quando você quer mocar os dados que estão fora da classe do teste.
 * ```@InjectMocks```: Cria o objeto anotado, pois dentro da classe de testes não temos o Spring.
