@@ -24,16 +24,15 @@ class AnimeHardCodedRepositoryTest {
   @Mock
   private AnimeData animeData;
 
-  private final List<Anime> animeList = new ArrayList<>();
+  private List<Anime> animeList;
 
   @BeforeEach
   void init() {
-    var haikyuu = Anime.builder().name("Haikyuu!! Second Season").id(1L).build();
-    var hunter = Anime.builder().name("Hunter x Hunter (2011)").id(2L).build();
-    var jujutsu = Anime.builder().name("Jujutsu Kaisen").id(3L).build();
-    var demon = Anime.builder().name("Demon Slayer: Kimetsu no Yaiba").id(4L).build();
+    var fullMetalBrotherhood = Anime.builder().name("Full Metal Brotherhood").id(1L).build();
+    var steinsGate = Anime.builder().name("Steins Gate").id(2L).build();
+    var mashle = Anime.builder().name("Mashle").id(3L).build();
 
-    animeList.addAll(List.of(haikyuu, hunter, jujutsu, demon));
+    animeList = new ArrayList<>(List.of(fullMetalBrotherhood, steinsGate, mashle));
   }
 
   @Test
@@ -132,10 +131,10 @@ class AnimeHardCodedRepositoryTest {
     var animeToDelete = animeData.getAnimeList().getFirst();
     repository.delete(animeToDelete);
 
-    var animeList = repository.findAll();
+    var animes = repository.findAll();
 
     Assertions
-            .assertThat(animeList)
+            .assertThat(animes)
             .isNotEmpty()
             .doesNotContain(animeToDelete);
   }
