@@ -143,7 +143,7 @@ class AnimeServiceTest {
   @Test
   @DisplayName("delete removes an anime")
   @Order(8)
-  void deleteRemovesAnAnimeWhenSuccessfull() {
+  void deleteRemovesAnAnimeWhenSuccessful() {
     var animeToDelete = animeList.getFirst();
 
     BDDMockito.when(repository.findById(animeToDelete.getId())).thenReturn(Optional.of(animeToDelete));

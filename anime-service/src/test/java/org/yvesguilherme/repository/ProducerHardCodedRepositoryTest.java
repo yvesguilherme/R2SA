@@ -42,7 +42,7 @@ class ProducerHardCodedRepositoryTest {
   @Test
   @DisplayName("findAll returns a list with all producers")
   @Order(1)
-  void findAllReturnsAllProducersWhenSuccessfull() {
+  void findAllReturnsAllProducersWhenSuccessful() {
     BDDMockito.when(producerData.getProducers()).thenReturn(producerList);
 
     var producers = repository.findAll();
@@ -56,7 +56,7 @@ class ProducerHardCodedRepositoryTest {
 
   @Test
   @DisplayName("findById returns a producer with given id")
-  void findByIdReturnsProducerByIdWhenSuccessfull() {
+  void findByIdReturnsProducerByIdWhenSuccessful() {
     BDDMockito.when(producerData.getProducers()).thenReturn(producerList);
 
     var expectedProducer = producerList.getFirst();
