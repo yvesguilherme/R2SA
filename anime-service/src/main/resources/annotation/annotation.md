@@ -42,5 +42,8 @@ Um método HTTP é idempotente se uma requisição idêntica pode ser feita uma 
 * ```@DisplayName("findAll returns a list with all producers")```: Serve para facilitar a descrição do teste.
 * ```@Mock```: Serve para dar o comportamento de mock para o objeto, pois se não der comportamento será ```null```.
 * ```@Order(n)```: Serve para deixar explícito em qual ordem será realizado aquele teste, porém é necessário também adicionar a anotação ```@TestMethodOrder(MethodOrderer.OrderAnnotation.class)``` na classe.
-
-  
+* Testes de controller:
+  * ```@SpringBootTest```: Starta um servidor e faz algumas configurações para rodar os testes. Caso queira fazer um teste de integração, esta anotação é necessária ```@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)```.
+  * ```@AutoConfigureMockMvc```: Permite a configuração de alguns clientes para utilizar para fazer chamadas.
+  * ```@MockMvc(controllers = XPTO.class)```: Permite fazer chamadas para o controller como se fosse um teste de integração, porém ele é um **_sliced test_**, carrega parcialmente alguns beans, permitindo que os testes sejam realizados mais rapidamente.
+    * Não carrega ```@Component @Repository @Service```
