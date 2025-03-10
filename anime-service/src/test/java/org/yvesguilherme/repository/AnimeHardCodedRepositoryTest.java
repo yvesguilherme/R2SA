@@ -50,7 +50,7 @@ class AnimeHardCodedRepositoryTest {
   }
 
   @Test
-  @DisplayName("findById return an Anime with given id")
+  @DisplayName("findById returns an Anime with given id")
   void findByIdReturnsAnAnimeWhenSuccessful() {
     BDDMockito.when(animeData.getAnimeList()).thenReturn(animeList);
 
