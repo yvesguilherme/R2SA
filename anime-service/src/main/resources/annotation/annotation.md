@@ -49,3 +49,4 @@ Um método HTTP é idempotente se uma requisição idêntica pode ser feita uma 
     * Não carrega ```@Component @Repository @Service```
   * ```@Import({})```: Importa as classes de configuração necessárias para rodar o teste. Ex: ```Service.class, Repository.class, Mapper.class, etc.```.
     * Também é possível não utilizar esta anotação e utilizar a ```@ComponentScan(basePackages = "org.yvesguilherme"```, assim fica mais limpa a classe e é melhor num cenário que tenha muitos beans.
+  * ```@SpyBean/@MockitoSpyBean```: Serve para fazer um mock parcial, ou seja, ele vai chamar o método real, porém se tiver algum método que você queira mockar o comportamento ex: ```save()```, você pode fazer isso.

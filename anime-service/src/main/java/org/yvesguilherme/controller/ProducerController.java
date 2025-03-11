@@ -3,6 +3,7 @@ package org.yvesguilherme.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -55,7 +56,7 @@ public class ProducerController {
     var producerSaved = producerService.save(producer);
     var producerPostResponse = producerMapper.toProducerPostResponse(producerSaved);
 
-    return ResponseEntity.ok(producerPostResponse);
+    return ResponseEntity.status(HttpStatus.CREATED).body(producerPostResponse);
   }
 
   @DeleteMapping("{id}")

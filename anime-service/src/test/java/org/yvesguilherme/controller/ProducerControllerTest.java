@@ -3,12 +3,15 @@ package org.yvesguilherme.controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -42,6 +45,9 @@ class ProducerControllerTest {
 
   @MockitoBean
   private ProducerData producerData;
+
+  @MockitoSpyBean
+  private ProducerHardCodedRepository repository;
 
   private List<Producer> producerList;
 
@@ -125,6 +131,28 @@ class ProducerControllerTest {
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isNotFound())
             .andExpect(MockMvcResultMatchers.status().reason("Producer not found!"));
+  }
+
+  @Test
+  @DisplayName("POST /producers creates a Producer when successful")
+  void save_CreatesAProducer_WhenSuccessful() throws Exception {
+    var request = readResourceFile("producer/post-request-producer-200.json");
+    var response = readResourceFile("producer/post-response-producer-201.json");
+    var producerToSave = Producer.builder().id(99L).name("Aniplex").createdAt(LocalDateTime.now()).build();
+
+    BDDMockito.when(repository.save(ArgumentMatchers.any())).thenReturn(producerToSave);
+
+    mockMvc.perform(
+                    MockMvcRequestBuilders
+                            .post("/producers")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header("x-api-key", "1234")
+                            .content(request)
+            )
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isCreated())
+            .andExpect(MockMvcResultMatchers.content().json(response));
   }
 
   private static LocalDateTime createMockLocalDateTime() {
