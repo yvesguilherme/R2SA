@@ -47,3 +47,5 @@ Um método HTTP é idempotente se uma requisição idêntica pode ser feita uma 
   * ```@AutoConfigureMockMvc```: Permite a configuração de alguns clientes para utilizar para fazer chamadas.
   * ```@MockMvc(controllers = XPTO.class)```: Permite fazer chamadas para o controller como se fosse um teste de integração, porém ele é um **_sliced test_**, carrega parcialmente alguns beans, permitindo que os testes sejam realizados mais rapidamente.
     * Não carrega ```@Component @Repository @Service```
+  * ```@Import({})```: Importa as classes de configuração necessárias para rodar o teste. Ex: ```Service.class, Repository.class, Mapper.class, etc.```.
+    * Também é possível não utilizar esta anotação e utilizar a ```@ComponentScan(basePackages = "org.yvesguilherme"```, assim fica mais limpa a classe e é melhor num cenário que tenha muitos beans.
