@@ -60,7 +60,7 @@ class ProducerControllerTest {
   }
 
   @Test
-  @DisplayName("findAll returns a list with all Producers when argument is null")
+  @DisplayName("GET v1/producers returns a list with all Producers when argument is null")
   void findAll_ReturnsAListWithAllProducers_WhenArgumentIsNull() throws Exception {
     BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados, devemos mocá-los.
 
@@ -70,6 +70,61 @@ class ProducerControllerTest {
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.content().json(response));
+  }
+
+  @Test
+  @DisplayName("GET /producers?name=Ufotable returns a list with found object when name exists")
+  void findAll_ReturnsAListWithFoundObject_WhenNameExists() throws Exception {
+    BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados, devemos mocá-los.
+
+    var response = readResourceFile("producer/get-producer-ufotable-name-200.json");
+    var name = "Ufotable";
+
+    mockMvc.perform(MockMvcRequestBuilders.get("/producers").param("name", name))
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.content().json(response));
+  }
+
+  @Test
+  @DisplayName("GET /producers?name=x returns an empty list when name is not found")
+  void findAll_ReturnsAnEmptyList_WhenNameIsNotFound() throws Exception {
+    BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados, devemos mocá-los.
+
+    var response = readResourceFile("producer/get-producer-x-name-200.json");
+    var name = "x";
+
+    mockMvc.perform(MockMvcRequestBuilders.get("/producers").param("name", name))
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.content().json(response));
+  }
+
+  @Test
+  @DisplayName("GET /producers/1 returns a Producer with given id")
+  void findById_ReturnsAProducerWithGivenId_WhenSuccessful() throws Exception {
+    BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados
+
+    var response = readResourceFile("producer/get-producer-by-id-1-200.json");
+    var id = 1;
+
+    mockMvc.perform(MockMvcRequestBuilders.get("/producers/{id}", id))
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.content().json(response));
+  }
+
+  @Test
+  @DisplayName("GET /producers/4 throws ResponseStatusException 404 when Producer is not found")
+  void findById_ThrowsResponseStatusException404_WhenProducerIsNotFound() throws Exception {
+    BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados
+
+    var id = 4;
+
+    mockMvc.perform(MockMvcRequestBuilders.get("/producers/{id}", id))
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isNotFound())
+            .andExpect(MockMvcResultMatchers.status().reason("Producer not found!"));
   }
 
   private static LocalDateTime createMockLocalDateTime() {
