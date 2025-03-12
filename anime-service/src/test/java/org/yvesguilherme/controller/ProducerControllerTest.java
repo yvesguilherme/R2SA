@@ -155,6 +155,67 @@ class ProducerControllerTest {
             .andExpect(MockMvcResultMatchers.content().json(response));
   }
 
+  @Test
+  @DisplayName("PUT /producers updates a Producer when successful")
+  void update_UpdatesAProducer_WhenSuccessful() throws Exception {
+    BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados, devemos mocá-los.
+
+    var request = readResourceFile("producer/put-request-producer-200.json");
+
+    mockMvc.perform(
+                    MockMvcRequestBuilders
+                            .put("/producers")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(request)
+            )
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isNoContent());
+  }
+
+  @Test
+  @DisplayName("PUT /producers throws ResponseStatusException when producer is not found")
+  void update_ThrowsResponseStatusException_WhenProducerIsNotFound() throws Exception {
+    BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados
+
+    var request = readResourceFile("producer/put-request-producer-404.json");
+
+    mockMvc.perform(
+                    MockMvcRequestBuilders
+                            .put("/producers")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(request)
+            )
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isNotFound())
+            .andExpect(MockMvcResultMatchers.status().reason("Producer not found!"));
+
+  }
+
+  @Test
+  @DisplayName("DELETE /producers/1 delete removes a producer")
+  void delete_RemovesProducer_WhenSuccessful() throws Exception {
+    BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados
+
+    var producerId = producerList.getFirst().getId();
+
+    mockMvc.perform(MockMvcRequestBuilders.delete("/producers/{id}", producerId))
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isNoContent());
+  }
+
+  @Test
+  @DisplayName("DELETE /producers/99 throws ResponseStatusException when producer is not found")
+  void delete_ThrowsResponseStatusException_WhenProducerIsNotFound() throws Exception {
+    BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados
+
+    var producerId = 99;
+
+    mockMvc.perform(MockMvcRequestBuilders.delete("/producers/{id}", producerId))
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isNotFound())
+            .andExpect(MockMvcResultMatchers.status().reason("Producer not found!"));
+  }
+
   private static LocalDateTime createMockLocalDateTime() {
     var dateTime = "2025-03-11T11:04:13.658154042";
     var dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS");
