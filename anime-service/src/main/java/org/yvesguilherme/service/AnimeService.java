@@ -7,7 +7,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.yvesguilherme.domain.Anime;
 import org.yvesguilherme.exception.BadRequestException;
 import org.yvesguilherme.repository.AnimeHardCodedRepository;
-import org.yvesguilherme.util.enums.ProducerEnum;
+import org.yvesguilherme.util.enums.AnimeEnum;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class AnimeService {
   public Anime findByIdOrThrowNotFound(Long id) {
     return animeHardCodedRepository
             .findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ProducerEnum.NOT_FOUND.getMessage()));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, AnimeEnum.NOT_FOUND.getMessage()));
   }
 
   public Anime save(Anime anime) {
@@ -35,9 +35,9 @@ public class AnimeService {
   }
 
   public void delete(Long id) {
-    var producer = findByIdOrThrowNotFound(id);
+    var anime = findByIdOrThrowNotFound(id);
 
-    animeHardCodedRepository.delete(producer);
+    animeHardCodedRepository.delete(anime);
   }
 
   public void update(Anime animeToUpdate) {

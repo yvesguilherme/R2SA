@@ -23,12 +23,13 @@ import java.util.concurrent.TimeUnit;
 public class AnimeController {
   private final AnimeMapper animeMapper;
   private final AnimeService animeService;
+  private final Constants constants;
 
   @GetMapping("thread-test")
   public ResponseEntity<List<String>> listAll() throws InterruptedException {
     log.info(Thread.currentThread().getName());
     TimeUnit.SECONDS.sleep(1);
-    return new ResponseEntity<>(Constants.LIST_OF_ANIME, HttpStatus.OK);
+    return new ResponseEntity<>(constants.getListAnimeNames(), HttpStatus.OK);
   }
 
   @GetMapping
@@ -59,7 +60,7 @@ public class AnimeController {
     var animeSaved = animeService.save(anime);
     var animePostResponse = animeMapper.toAnimePostResponse(animeSaved);
 
-    return ResponseEntity.ok(animePostResponse);
+    return ResponseEntity.status(HttpStatus.CREATED).body(animePostResponse);
   }
 
   @DeleteMapping("{id}")
