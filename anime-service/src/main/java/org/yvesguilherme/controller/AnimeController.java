@@ -26,14 +26,14 @@ public class AnimeController {
   private final Constants constants;
 
   @GetMapping("thread-test")
-  public ResponseEntity<List<String>> listAll() throws InterruptedException {
+  public ResponseEntity<List<String>> findAll() throws InterruptedException {
     log.info(Thread.currentThread().getName());
     TimeUnit.SECONDS.sleep(1);
     return new ResponseEntity<>(constants.getListAnimeNames(), HttpStatus.OK);
   }
 
   @GetMapping
-  public ResponseEntity<List<AnimeGetResponse>> listOfAnime(@RequestParam(required = false) String name) {
+  public ResponseEntity<List<AnimeGetResponse>> findAll(@RequestParam(required = false) String name) {
     log.debug("Request received to list all animes, param name '{}'", name);
 
     var listOfAnime = animeService.findAll(name);
