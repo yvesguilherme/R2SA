@@ -63,7 +63,7 @@ class AnimeControllerTest {
   @DisplayName("GET /animes/thread-test returns a list of anime names")
   void listAll_ReturnsListOfAnimeNames_WhenSuccessful() throws Exception {
     var mockList = List.of("Naruto", "Pokémon");
-    BDDMockito.when(constants.getListAnimeNames()).thenReturn(mockList);
+    BDDMockito.when(constants.getListAnime()).thenReturn(mockList);
 
     var response = readResourceFile("anime/get-anime-thread-test-200.json");
 

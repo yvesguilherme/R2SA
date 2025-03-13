@@ -29,7 +29,7 @@ public class AnimeController {
   public ResponseEntity<List<String>> findAll() throws InterruptedException {
     log.info(Thread.currentThread().getName());
     TimeUnit.SECONDS.sleep(1);
-    return new ResponseEntity<>(constants.getListAnimeNames(), HttpStatus.OK);
+    return new ResponseEntity<>(constants.getListAnime(), HttpStatus.OK);
   }
 
   @GetMapping

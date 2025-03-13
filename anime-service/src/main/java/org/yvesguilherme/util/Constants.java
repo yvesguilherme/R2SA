@@ -9,10 +9,11 @@ import java.util.List;
 @Configuration
 @Getter
 public class Constants {
-  private final List<String> listAnimeNames = new ArrayList<>();
+  private final List<String> listAnime = new ArrayList<>();
+  private final List<String> listHeroes = new ArrayList<>();
 
   {
-    listAnimeNames.addAll(
+    listAnime.addAll(
             List.of(
                     "Ninja Kamui",
                     "Kaijuu-8gou",
@@ -23,5 +24,7 @@ public class Constants {
                     "Demon Slayer: Kimetsu no Yaiba"
             )
     );
+
+    listHeroes.addAll(List.of("Guts", "Zoro", "Kakashi", "Goku"));
   }
 }
