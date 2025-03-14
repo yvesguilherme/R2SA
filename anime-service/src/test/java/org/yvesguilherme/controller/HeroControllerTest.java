@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.yvesguilherme.commons.FileUtils;
 import org.yvesguilherme.util.Constants;
 
 import java.io.IOException;
@@ -24,11 +25,12 @@ import java.util.List;
 @WebMvcTest(HeroController.class)
 @ComponentScan(basePackages = "org.yvesguilherme")
 class HeroControllerTest {
+  private static final String URL = "/heroes";
   @Autowired
   private MockMvc mockMvc;
 
   @Autowired
-  private ResourceLoader resourceLoader;
+  private FileUtils fileUtils;
 
   @MockitoBean
   private Constants constants;
@@ -45,9 +47,9 @@ class HeroControllerTest {
   void findAll_ReturnsListOfHeroes_WhenSuccessful() throws Exception {
     BDDMockito.when(constants.getListHeroes()).thenReturn(listHeroes);
 
-    var response = readResourceFile("hero/get-hero-200.json");
+    var response = fileUtils.readResourceFile("hero/get-hero-200.json");
 
-    mockMvc.perform(MockMvcRequestBuilders.get("/heroes"))
+    mockMvc.perform(MockMvcRequestBuilders.get(URL))
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -59,10 +61,10 @@ class HeroControllerTest {
   void listAllHeroesParam_ReturnsListOfHeroes_WhenSuccessful() throws Exception {
     BDDMockito.when(constants.getListHeroes()).thenReturn(listHeroes);
 
-    var response = readResourceFile("hero/get-hero-filter-200.json");
+    var response = fileUtils.readResourceFile("hero/get-hero-filter-200.json");
     var name = "All Might";
 
-    mockMvc.perform(MockMvcRequestBuilders.get("/heroes/filter").param("name", name))
+    mockMvc.perform(MockMvcRequestBuilders.get(URL +"/filter").param("name", name))
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -74,10 +76,10 @@ class HeroControllerTest {
   void listAllHeroesParamList_ReturnsListOfHeroes_WhenSuccessful() throws Exception {
     BDDMockito.when(constants.getListHeroes()).thenReturn(listHeroes);
 
-    var response = readResourceFile("hero/get-hero-filter-list-200.json");
+    var response = fileUtils.readResourceFile("hero/get-hero-filter-list-200.json");
     var names = List.of("All Might", "Endeavor").toArray(String[]::new);
 
-    mockMvc.perform(MockMvcRequestBuilders.get("/heroes/filterList").param("names", names))
+    mockMvc.perform(MockMvcRequestBuilders.get(URL +"/filterList").param("names", names))
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -89,10 +91,10 @@ class HeroControllerTest {
   void findByName_ReturnsHero_WhenSuccessful() throws Exception {
     BDDMockito.when(constants.getListHeroes()).thenReturn(listHeroes);
 
-    var response = readResourceFile("hero/get-hero-name-200.txt");
+    var response = fileUtils.readResourceFile("hero/get-hero-name-200.txt");
     var name = "Mirko";
 
-    mockMvc.perform(MockMvcRequestBuilders.get("/heroes/%s".formatted(name)))
+    mockMvc.perform(MockMvcRequestBuilders.get(URL +"/%s".formatted(name)))
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
@@ -107,16 +109,10 @@ class HeroControllerTest {
     var response = "Hero not found!";
     var name = "Yves";
 
-    mockMvc.perform(MockMvcRequestBuilders.get("/heroes/%s".formatted(name)))
+    mockMvc.perform(MockMvcRequestBuilders.get(URL +"/%s".formatted(name)))
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
             .andExpect(MockMvcResultMatchers.content().string(response));
-  }
-
-  private String readResourceFile(String fileName) throws IOException {
-    var file = resourceLoader.getResource("classpath:%s".formatted(fileName));
-
-    return new String(Files.readAllBytes(file.getFile().toPath()));
   }
 }

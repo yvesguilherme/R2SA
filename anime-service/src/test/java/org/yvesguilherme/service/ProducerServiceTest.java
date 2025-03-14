@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
+import org.yvesguilherme.commons.ProducerUtils;
 import org.yvesguilherme.domain.Producer;
 import org.yvesguilherme.exception.BadRequestException;
 import org.yvesguilherme.repository.ProducerHardCodedRepository;
@@ -32,13 +33,12 @@ class ProducerServiceTest {
 
   private List<Producer> producerList;
 
+  @InjectMocks
+  private ProducerUtils producerUtils;
+
   @BeforeEach
   void init() {
-    var ufotable = Producer.builder().id(1L).name("Ufotable").createdAt(LocalDateTime.now()).build();
-    var witStudio = Producer.builder().id(2L).name("Wit Studio").createdAt(LocalDateTime.now()).build();
-    var studioGhibli = Producer.builder().id(3L).name("Studio Ghibli").createdAt(LocalDateTime.now()).build();
-
-    producerList = new ArrayList<>(List.of(ufotable, witStudio, studioGhibli));
+    producerList = producerUtils.newProducerList();
   }
 
   @Test
@@ -110,7 +110,7 @@ class ProducerServiceTest {
   @DisplayName("save creates a producer")
   @Order(6)
   void saveCreatesAProducerWhenSuccessful() {
-    var producerToSave = Producer.builder().id(99L).name("MAPPA").createdAt(LocalDateTime.now()).build();
+    var producerToSave = producerUtils.newProducerToSave(null);
 
     BDDMockito.when(repository.save(producerToSave)).thenReturn(producerToSave);
 

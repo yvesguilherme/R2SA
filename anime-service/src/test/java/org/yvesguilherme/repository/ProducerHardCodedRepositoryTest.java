@@ -7,10 +7,10 @@ import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.yvesguilherme.commons.ProducerUtils;
 import org.yvesguilherme.domain.Producer;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,15 +29,13 @@ class ProducerHardCodedRepositoryTest {
 
   private List<Producer> producerList;
 
+  @InjectMocks
+  private ProducerUtils producerUtils;
+
   @BeforeEach
   void init() {
-    var ufotable = Producer.builder().id(1L).name("Ufotable").createdAt(LocalDateTime.now()).build();
-    var witStudio = Producer.builder().id(2L).name("Wit Studio").createdAt(LocalDateTime.now()).build();
-    var studioGhibli = Producer.builder().id(3L).name("Studio Ghibli").createdAt(LocalDateTime.now()).build();
-
-    producerList = new ArrayList<>(List.of(ufotable, witStudio, studioGhibli));
+    producerList = producerUtils.newProducerList();
   }
-
 
   @Test
   @DisplayName("findAll returns a list with all producers")
@@ -100,7 +98,7 @@ class ProducerHardCodedRepositoryTest {
   void saveCreatesAProducerWhenSuccessful() {
     BDDMockito.when(producerData.getProducers()).thenReturn(producerList);
 
-    var producerToSave = Producer.builder().id(99L).name("Mappa").createdAt(LocalDateTime.now()).build();
+    var producerToSave = producerUtils.newProducerToSave(null);
 
     var producer = repository.save(producerToSave);
 

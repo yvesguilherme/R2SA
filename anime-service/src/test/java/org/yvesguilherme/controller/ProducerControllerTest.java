@@ -8,7 +8,6 @@ import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
@@ -16,6 +15,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.yvesguilherme.commons.FileUtils;
+import org.yvesguilherme.commons.ProducerUtils;
 import org.yvesguilherme.config.ConnectionConfiguration;
 import org.yvesguilherme.domain.Producer;
 import org.yvesguilherme.mapper.ProducerMapperImpl;
@@ -23,11 +24,7 @@ import org.yvesguilherme.repository.ProducerData;
 import org.yvesguilherme.repository.ProducerHardCodedRepository;
 import org.yvesguilherme.service.ProducerService;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 @WebMvcTest(controllers = ProducerController.class)
@@ -36,10 +33,14 @@ import java.util.List;
         ProducerData.class,
         ProducerHardCodedRepository.class,
         ProducerMapperImpl.class,
-        ProducerService.class
+        ProducerService.class,
+        FileUtils.class,
+        ProducerUtils.class
 })
 //@ComponentScan(basePackages = "org.yvesguilherme")
 class ProducerControllerTest {
+  private static final String URL = "/producers";
+
   @Autowired
   private MockMvc mockMvc;
 
@@ -52,17 +53,14 @@ class ProducerControllerTest {
   private List<Producer> producerList;
 
   @Autowired
-  private ResourceLoader resourceLoader;
+  private FileUtils fileUtils;
+
+  @Autowired
+  private ProducerUtils producerUtils;
 
   @BeforeEach
   void init() {
-    var localDateTime = createMockLocalDateTime();
-
-    var ufotable = Producer.builder().id(1L).name("Ufotable").createdAt(localDateTime).build();
-    var witStudio = Producer.builder().id(2L).name("Wit Studio").createdAt(localDateTime).build();
-    var studioGhibli = Producer.builder().id(3L).name("Studio Ghibli").createdAt(localDateTime).build();
-
-    producerList = new ArrayList<>(List.of(ufotable, witStudio, studioGhibli));
+    producerList = producerUtils.newProducerList();
   }
 
   @Test
@@ -70,9 +68,9 @@ class ProducerControllerTest {
   void findAll_ReturnsAListWithAllProducers_WhenArgumentIsNull() throws Exception {
     BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados, devemos mocá-los.
 
-    var response = readResourceFile("producer/get-producer-null-name-200.json");
+    var response = fileUtils.readResourceFile("producer/get-producer-null-name-200.json");
 
-    mockMvc.perform(MockMvcRequestBuilders.get("/producers"))
+    mockMvc.perform(MockMvcRequestBuilders.get(URL))
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.content().json(response));
@@ -83,10 +81,10 @@ class ProducerControllerTest {
   void findAll_ReturnsAListWithFoundObject_WhenNameExists() throws Exception {
     BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados, devemos mocá-los.
 
-    var response = readResourceFile("producer/get-producer-ufotable-name-200.json");
+    var response = fileUtils.readResourceFile("producer/get-producer-ufotable-name-200.json");
     var name = "Ufotable";
 
-    mockMvc.perform(MockMvcRequestBuilders.get("/producers").param("name", name))
+    mockMvc.perform(MockMvcRequestBuilders.get(URL).param("name", name))
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.content().json(response));
@@ -97,10 +95,10 @@ class ProducerControllerTest {
   void findAll_ReturnsAnEmptyList_WhenNameIsNotFound() throws Exception {
     BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados, devemos mocá-los.
 
-    var response = readResourceFile("producer/get-producer-x-name-200.json");
+    var response = fileUtils.readResourceFile("producer/get-producer-x-name-200.json");
     var name = "x";
 
-    mockMvc.perform(MockMvcRequestBuilders.get("/producers").param("name", name))
+    mockMvc.perform(MockMvcRequestBuilders.get(URL).param("name", name))
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.content().json(response));
@@ -111,10 +109,10 @@ class ProducerControllerTest {
   void findById_ReturnsAProducerWithGivenId_WhenSuccessful() throws Exception {
     BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados
 
-    var response = readResourceFile("producer/get-producer-by-id-1-200.json");
+    var response = fileUtils.readResourceFile("producer/get-producer-by-id-1-200.json");
     var id = 1;
 
-    mockMvc.perform(MockMvcRequestBuilders.get("/producers/{id}", id))
+    mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{id}", id))
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.content().json(response));
@@ -127,7 +125,7 @@ class ProducerControllerTest {
 
     var id = 4;
 
-    mockMvc.perform(MockMvcRequestBuilders.get("/producers/{id}", id))
+    mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{id}", id))
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isNotFound())
             .andExpect(MockMvcResultMatchers.status().reason("Producer not found!"));
@@ -136,15 +134,15 @@ class ProducerControllerTest {
   @Test
   @DisplayName("POST /producers creates a Producer when successful")
   void save_CreatesAProducer_WhenSuccessful() throws Exception {
-    var request = readResourceFile("producer/post-request-producer-200.json");
-    var response = readResourceFile("producer/post-response-producer-201.json");
-    var producerToSave = Producer.builder().id(99L).name("Aniplex").createdAt(LocalDateTime.now()).build();
+    var request = fileUtils.readResourceFile("producer/post-request-producer-200.json");
+    var response = fileUtils.readResourceFile("producer/post-response-producer-201.json");
+    var producerToSave = producerUtils.newProducerToSave("Aniplex");
 
     BDDMockito.when(repository.save(ArgumentMatchers.any())).thenReturn(producerToSave);
 
     mockMvc.perform(
                     MockMvcRequestBuilders
-                            .post("/producers")
+                            .post(URL)
                             .contentType(MediaType.APPLICATION_JSON)
                             .header("x-api-key", "1234")
                             .content(request)
@@ -160,11 +158,11 @@ class ProducerControllerTest {
   void update_UpdatesAProducer_WhenSuccessful() throws Exception {
     BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados, devemos mocá-los.
 
-    var request = readResourceFile("producer/put-request-producer-200.json");
+    var request = fileUtils.readResourceFile("producer/put-request-producer-200.json");
 
     mockMvc.perform(
                     MockMvcRequestBuilders
-                            .put("/producers")
+                            .put(URL)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(request)
             )
@@ -177,11 +175,11 @@ class ProducerControllerTest {
   void update_ThrowsResponseStatusException_WhenProducerIsNotFound() throws Exception {
     BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados
 
-    var request = readResourceFile("producer/put-request-producer-404.json");
+    var request = fileUtils.readResourceFile("producer/put-request-producer-404.json");
 
     mockMvc.perform(
                     MockMvcRequestBuilders
-                            .put("/producers")
+                            .put(URL)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(request)
             )
@@ -198,7 +196,7 @@ class ProducerControllerTest {
 
     var producerId = producerList.getFirst().getId();
 
-    mockMvc.perform(MockMvcRequestBuilders.delete("/producers/{id}", producerId))
+    mockMvc.perform(MockMvcRequestBuilders.delete(URL + "/{id}", producerId))
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isNoContent());
   }
@@ -210,22 +208,9 @@ class ProducerControllerTest {
 
     var producerId = 99;
 
-    mockMvc.perform(MockMvcRequestBuilders.delete("/producers/{id}", producerId))
+    mockMvc.perform(MockMvcRequestBuilders.delete(URL + "/{id}", producerId))
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isNotFound())
             .andExpect(MockMvcResultMatchers.status().reason("Producer not found!"));
-  }
-
-  private static LocalDateTime createMockLocalDateTime() {
-    var dateTime = "2025-03-11T11:04:13.658154042";
-    var dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS");
-
-    return LocalDateTime.parse(dateTime, dateTimeFormatter);
-  }
-
-  private String readResourceFile(String fileName) throws IOException {
-    var file = resourceLoader.getResource("classpath:%s".formatted(fileName)).getFile();
-
-    return new String(Files.readAllBytes(file.toPath()));
   }
 }
