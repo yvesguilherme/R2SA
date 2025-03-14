@@ -8,11 +8,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
+import org.yvesguilherme.commons.AnimeUtils;
 import org.yvesguilherme.domain.Anime;
 import org.yvesguilherme.exception.BadRequestException;
 import org.yvesguilherme.repository.AnimeHardCodedRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,13 +30,12 @@ class AnimeServiceTest {
 
   private List<Anime> animeList;
 
+  @InjectMocks
+  private AnimeUtils animeUtils;
+
   @BeforeEach
   void setUp() {
-    var ninja = Anime.builder().name("Ninja Kamui").id(1L).build();
-    var kaijuu = Anime.builder().name("Kaijuu-8gou").id(2L).build();
-    var haikyuu = Anime.builder().name("Haikyuu!! Second Season").id(3L).build();
-
-    animeList = new ArrayList<>(List.of(ninja, kaijuu, haikyuu));
+    animeList = animeUtils.newAnimeList();
   }
 
   @Test
@@ -119,7 +118,7 @@ class AnimeServiceTest {
   @DisplayName("save creates an anime")
   @Order(6)
   void saveCreatesAnAnimeWhenSuccessful() {
-    var animeToSave = Anime.builder().id(929L).name("Hellsing").build();
+    var animeToSave = animeUtils.newAnimeToSave("Hellsing");
 
     BDDMockito.when(repository.save(animeToSave)).thenReturn(animeToSave);
 

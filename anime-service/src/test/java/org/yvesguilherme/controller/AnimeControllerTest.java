@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.yvesguilherme.commons.AnimeUtils;
 import org.yvesguilherme.commons.FileUtils;
 import org.yvesguilherme.domain.Anime;
 import org.yvesguilherme.repository.AnimeData;
@@ -22,7 +23,6 @@ import org.yvesguilherme.repository.AnimeHardCodedRepository;
 import org.yvesguilherme.service.AnimeService;
 import org.yvesguilherme.util.Constants;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @WebMvcTest(controllers = AnimeController.class)
@@ -50,13 +50,12 @@ class AnimeControllerTest {
 
   private List<Anime> animeList;
 
+  @Autowired
+  private AnimeUtils animeUtils;
+
   @BeforeEach
   void init() {
-    var attackOnTitan = Anime.builder().name("Attack on Titan").id(1L).build();
-    var demonSlayer = Anime.builder().name("Demon Slayer").id(2L).build();
-    var myHeroAcademia = Anime.builder().name("My Hero Academia").id(3L).build();
-
-    animeList = new ArrayList<>(List.of(attackOnTitan, demonSlayer, myHeroAcademia));
+    animeList = animeUtils.newAnimeList();
   }
 
   @Test
@@ -146,7 +145,7 @@ class AnimeControllerTest {
   void save_CreatesAnAnime_WhenSuccessful() throws Exception {
     var request = fileUtils.readResourceFile("anime/post-request-anime-200.json");
     var response = fileUtils.readResourceFile("anime/post-response-anime-201.json");
-    var animeToSave = Anime.builder().id(999L).name("Naruto").build();
+    var animeToSave = animeUtils.newAnimeToSave("Naruto");
 
     BDDMockito.when(repository.save(ArgumentMatchers.any())).thenReturn(animeToSave);
 

@@ -9,9 +9,9 @@ import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.yvesguilherme.commons.AnimeUtils;
 import org.yvesguilherme.domain.Anime;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,13 +26,12 @@ class AnimeHardCodedRepositoryTest {
 
   private List<Anime> animeList;
 
+  @InjectMocks
+  private AnimeUtils animeUtils;
+
   @BeforeEach
   void init() {
-    var fullMetalBrotherhood = Anime.builder().name("Full Metal Brotherhood").id(1L).build();
-    var steinsGate = Anime.builder().name("Steins Gate").id(2L).build();
-    var mashle = Anime.builder().name("Mashle").id(3L).build();
-
-    animeList = new ArrayList<>(List.of(fullMetalBrotherhood, steinsGate, mashle));
+    animeList = animeUtils.newAnimeList();
   }
 
   @Test
@@ -81,7 +80,7 @@ class AnimeHardCodedRepositoryTest {
   void saveCreatesAnAnimeWhenSuccessful() {
     BDDMockito.when(animeData.getAnimeList()).thenReturn(animeList);
 
-    var animeToSave = Anime.builder().id(99L).name("Pokémon").build();
+    var animeToSave = animeUtils.newAnimeToSave("Pokémon");
     var anime = repository.save(animeToSave);
 
     Assertions
