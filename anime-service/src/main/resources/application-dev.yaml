@@ -1,0 +1,4 @@
+database:
+  url: development:3306
+  username: postgreSQL_user_dev
+  password: postgreSQL_password_dev@!@#212

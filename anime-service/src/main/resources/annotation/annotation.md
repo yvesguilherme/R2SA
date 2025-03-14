@@ -50,3 +50,8 @@ Um método HTTP é idempotente se uma requisição idêntica pode ser feita uma 
   * ```@Import({})```: Importa as classes de configuração necessárias para rodar o teste. Ex: ```Service.class, Repository.class, Mapper.class, etc.```.
     * Também é possível não utilizar esta anotação e utilizar a ```@ComponentScan(basePackages = "org.yvesguilherme"```, assim fica mais limpa a classe e é melhor num cenário que tenha muitos beans.
   * ```@SpyBean/@MockitoSpyBean```: Serve para fazer um mock parcial, ou seja, ele vai chamar o método real, porém se tiver algum método que você queira mockar o comportamento ex: ```save()```, você pode fazer isso.
+
+### Profiles
+- Utilizado para o DTAP(Development, testing, acceptance and production)
+- Para passar o profile é necessário utilizar a opção  ```Build and run -> Modify options -> Program arguments -> --spring.profiles.active=stg``` no momento de rodar a aplicação ou se estiver utilizando o ```Intellij Ultimate``` é somente setar no active profile.
+- Ele irá pegar tudo do application.yaml (padrão) e colocará no profile ativo application-stg.yaml ou application-prd.yaml.

@@ -1,12 +1,21 @@
 package org.yvesguilherme.config;
 
 import external.dependency.Connection;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
 @Configuration
 public class ConnectionConfiguration {
+  @Value("${database.url}")
+  private String url;
+
+  @Value("${database.username}")
+  private String username;
+
+  @Value("${database.password}")
+  private String password;
 
   /**
    * @Bean - Utilizado para fazer injeção de dependência de um Objeto que não está no MEU controle.
@@ -24,7 +33,7 @@ public class ConnectionConfiguration {
   @Bean
   @Primary
   public Connection connectionPostgreSQL() {
-    return new Connection("localhost", "yvesPostgreSQL", "gokuPostgreSQL");
+    return new Connection(url, username, password);
   }
 
   @Bean(name = "connectionMongoDB")

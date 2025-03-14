@@ -20,6 +20,11 @@ server:
     threads:
       max: 20
 
+database:
+  url: localhost:3306
+  username: yvesguilhermePostgreSQL
+  password: gokuPostgreSQL
+
 application:
   title: Anime Service
   version: 1.0.0

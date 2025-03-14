@@ -1,0 +1,4 @@
+database:
+  url: staging:27017
+  username: mongoDB_user_staging
+  password: mongoDB_password_staging@!@#212
