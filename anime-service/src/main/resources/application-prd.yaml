@@ -1,4 +1,0 @@
-database:
-  url: production:3306
-  username: postgreSQL_user
-  password: postgreSQL_password_root@!@#!2

@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequiredArgsConstructor
 public class ConnectionController {
-  private final Connection connectionPostgreSQL;
+  private final Connection connection;
 
   @GetMapping
   public ResponseEntity<Connection> getConnection() {
     log.info("Getting connection");
-    return ResponseEntity.ok(connectionPostgreSQL);
+    return ResponseEntity.ok(connection);
   }
 }

@@ -1,0 +1,4 @@
+database:
+  url: oracleDNS:3306
+  username: yvesguilhermeOracle
+  password: gokuOracle

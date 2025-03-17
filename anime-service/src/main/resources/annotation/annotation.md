@@ -53,5 +53,9 @@ Um método HTTP é idempotente se uma requisição idêntica pode ser feita uma 
 
 ### Profiles
 - Utilizado para o DTAP(Development, testing, acceptance and production)
-- Para passar o profile é necessário utilizar a opção  ```Build and run -> Modify options -> Program arguments -> --spring.profiles.active=stg``` no momento de rodar a aplicação ou se estiver utilizando o ```Intellij Ultimate``` é somente setar no active profile.
+- Para passar o profile é necessário utilizar a opção:
+  - ```Build and run -> Modify options -> Add VM options -> -Dspring.profiles.active=stg``` no momento de rodar a aplicação
+  - ```Build and run -> Modify options -> Program arguments -> --spring.profiles.active=stg``` no momento de rodar a aplicação
+  - Se estiver o ```Intellij Ultimate``` é somente setar no active profile
+  - No ```application.yaml``` é possível setar o profile ativo: ```spring.profiles.active:dev,prd```.
 - Ele irá pegar tudo do application.yaml (padrão) e colocará no profile ativo application-stg.yaml ou application-prd.yaml.

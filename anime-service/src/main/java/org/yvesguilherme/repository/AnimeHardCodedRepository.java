@@ -6,7 +6,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Repository;
 import org.yvesguilherme.domain.Anime;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,7 +13,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Log4j2
 public class AnimeHardCodedRepository {
-  
+
   private final AnimeData animeData;
   private final Connection connection;
 

@@ -16,9 +16,8 @@ import java.util.Optional;
 public class ProducerHardCodedRepository {
   private final ProducerData producerData;
 
-  @Qualifier("connectionMongoDB")
+//  @Qualifier("connectionMongoDB")
   private final Connection connectionMongoDB;
-
 
   public List<Producer> findAll() {
     log.debug(connectionMongoDB);

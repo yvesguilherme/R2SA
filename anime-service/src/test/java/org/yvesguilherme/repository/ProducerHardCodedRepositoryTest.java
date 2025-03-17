@@ -10,7 +10,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.yvesguilherme.commons.ProducerUtils;
 import org.yvesguilherme.domain.Producer;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
