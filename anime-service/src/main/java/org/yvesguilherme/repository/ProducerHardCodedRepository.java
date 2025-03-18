@@ -3,7 +3,6 @@ package org.yvesguilherme.repository;
 import external.dependency.Connection;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.yvesguilherme.domain.Producer;
 
@@ -17,10 +16,10 @@ public class ProducerHardCodedRepository {
   private final ProducerData producerData;
 
 //  @Qualifier("connectionMongoDB")
-  private final Connection connectionMongoDB;
+  private final Connection connection;
 
   public List<Producer> findAll() {
-    log.debug(connectionMongoDB);
+    log.debug(connection);
     return producerData.getProducers();
   }
 

@@ -4,6 +4,7 @@ import external.dependency.Connection;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
@@ -29,6 +30,12 @@ public class ConnectionConfiguration {
    * @Primary - Diz que este método é o padrão, quando se tem mais de um @Bean,
    * porém pode ser utilizado também o nome do método.
    */
+  @Bean
+  @Primary
+  public Connection connection() {
+    return new Connection(url, username, password);
+  }
+
   @Bean
   @Profile("mysql")
   public Connection connectionMySQL() {

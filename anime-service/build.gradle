@@ -42,6 +42,18 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+sourceSets {
+    test {
+        java {
+            srcDirs = ['src/test/java']
+        }
+        resources {
+            srcDirs = ['src/test/resources']
+        }
+    }
+}
+
 tasks.named('test') {
     useJUnitPlatform()
+    systemProperty 'spring.profiles.active', 'test'
 }

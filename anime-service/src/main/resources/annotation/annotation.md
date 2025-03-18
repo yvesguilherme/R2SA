@@ -59,3 +59,28 @@ Um método HTTP é idempotente se uma requisição idêntica pode ser feita uma 
   - Se estiver o ```Intellij Ultimate``` é somente setar no active profile
   - No ```application.yaml``` é possível setar o profile ativo: ```spring.profiles.active:dev,prd```.
 - Ele irá pegar tudo do application.yaml (padrão) e colocará no profile ativo application-stg.yaml ou application-prd.yaml.
+- Uma maneira é utilizar a anotação ```@ActiveProfiles("PERFIL")``` em cada classe de teste.
+- É sempre bom ter um profile para testes, pois você garante que o ambiente de testes não esteja em produção.
+  - No gradle basta adicionar:
+    - ```shell
+        sourceSets {
+          test {
+            java {
+              srcDirs = ['src/test/java']
+            }
+            resources {
+              srcDirs = ['src/test/resources']
+            }
+          }
+        }
+      ```
+    - ```shell
+        test { 
+          systemProperty "spring.profiles.active", "test" 
+        }
+      ``` 
+  - No maven basta procurar:
+    - ```<maven-surefire-plugin>``` e adicionar:
+      - ```<configuration>```
+        - ```<argLine>-Dspring.profiles.active=test</argLine>```
+      - ```</configuration>```
