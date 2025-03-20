@@ -14,7 +14,6 @@ import org.yvesguilherme.exception.BadRequestException;
 import org.yvesguilherme.repository.ProducerHardCodedRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

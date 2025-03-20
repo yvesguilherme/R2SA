@@ -1,22 +1,25 @@
 package org.yvesguilherme.config;
 
 import external.dependency.Connection;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
-public class ConnectionConfiguration {
-  @Value("${database.url}")
-  private String url;
+@RequiredArgsConstructor
+public class ConnectionBeanConfiguration {
+  private final ConnectionConfigurationProperties configurationProperties;
 
-  @Value("${database.username}")
-  private String username;
-
-  @Value("${database.password}")
-  private String password;
+//  @Value("${database.url}")
+//  private String url;
+//
+//  @Value("${database.username}")
+//  private String username;
+//
+//  @Value("${database.password}")
+//  private String password;
 
   /**
    * @Bean - Utilizado para fazer injeção de dependência de um Objeto que não está no MEU controle.
@@ -33,30 +36,50 @@ public class ConnectionConfiguration {
   @Bean
   @Primary
   public Connection connection() {
-    return new Connection(url, username, password);
+    return new Connection(
+            configurationProperties.url(),
+            configurationProperties.username(),
+            configurationProperties.password()
+    );
   }
 
   @Bean
   @Profile("mysql")
   public Connection connectionMySQL() {
-    return new Connection(url, username, password);
+    return new Connection(
+            configurationProperties.url(),
+            configurationProperties.username(),
+            configurationProperties.password()
+    );
   }
 
   @Bean(name = "connectionMongoDB")
   @Profile("mongo")
   public Connection connectionMongo() {
-    return new Connection(url, username, password);
+    return new Connection(
+            configurationProperties.url(),
+            configurationProperties.username(),
+            configurationProperties.password()
+    );
   }
 
   @Bean(name = "connectionOracle")
   @Profile("oracle")
   public Connection connectionOracle() {
-    return new Connection(url, username, password);
+    return new Connection(
+            configurationProperties.url(),
+            configurationProperties.username(),
+            configurationProperties.password()
+    );
   }
 
   @Bean
   @Profile("postgresql")
   public Connection connectionPostgreSQL() {
-    return new Connection(url, username, password);
+    return new Connection(
+            configurationProperties.url(),
+            configurationProperties.username(),
+            configurationProperties.password()
+    );
   }
 }

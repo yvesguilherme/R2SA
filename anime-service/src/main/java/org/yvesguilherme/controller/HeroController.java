@@ -11,7 +11,7 @@ import java.util.List;
 @RequestMapping("heroes")
 @RequiredArgsConstructor
 public class HeroController {
-  
+
   private final Constants constants;
 
   @GetMapping

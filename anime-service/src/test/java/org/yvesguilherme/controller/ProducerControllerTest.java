@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -18,19 +17,18 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.yvesguilherme.commons.FileUtils;
 import org.yvesguilherme.commons.ProducerUtils;
-import org.yvesguilherme.config.ConnectionConfiguration;
+import org.yvesguilherme.config.ConnectionBeanConfiguration;
 import org.yvesguilherme.domain.Producer;
 import org.yvesguilherme.mapper.ProducerMapperImpl;
 import org.yvesguilherme.repository.ProducerData;
 import org.yvesguilherme.repository.ProducerHardCodedRepository;
 import org.yvesguilherme.service.ProducerService;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @WebMvcTest(controllers = ProducerController.class)
 @Import({
-        ConnectionConfiguration.class,
+        ConnectionBeanConfiguration.class,
         ProducerData.class,
         ProducerHardCodedRepository.class,
         ProducerMapperImpl.class,

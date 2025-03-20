@@ -7,7 +7,6 @@ import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -17,8 +16,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.yvesguilherme.commons.FileUtils;
 import org.yvesguilherme.util.Constants;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,7 +61,7 @@ class HeroControllerTest {
     var response = fileUtils.readResourceFile("hero/get-hero-filter-200.json");
     var name = "All Might";
 
-    mockMvc.perform(MockMvcRequestBuilders.get(URL +"/filter").param("name", name))
+    mockMvc.perform(MockMvcRequestBuilders.get(URL + "/filter").param("name", name))
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -79,7 +76,7 @@ class HeroControllerTest {
     var response = fileUtils.readResourceFile("hero/get-hero-filter-list-200.json");
     var names = List.of("All Might", "Endeavor").toArray(String[]::new);
 
-    mockMvc.perform(MockMvcRequestBuilders.get(URL +"/filterList").param("names", names))
+    mockMvc.perform(MockMvcRequestBuilders.get(URL + "/filterList").param("names", names))
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -94,7 +91,7 @@ class HeroControllerTest {
     var response = fileUtils.readResourceFile("hero/get-hero-name-200.txt");
     var name = "Mirko";
 
-    mockMvc.perform(MockMvcRequestBuilders.get(URL +"/%s".formatted(name)))
+    mockMvc.perform(MockMvcRequestBuilders.get(URL + "/%s".formatted(name)))
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))
@@ -109,7 +106,7 @@ class HeroControllerTest {
     var response = "Hero not found!";
     var name = "Yves";
 
-    mockMvc.perform(MockMvcRequestBuilders.get(URL +"/%s".formatted(name)))
+    mockMvc.perform(MockMvcRequestBuilders.get(URL + "/%s".formatted(name)))
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.TEXT_PLAIN))

@@ -29,6 +29,7 @@ dependencies {
     }
     implementation 'org.springframework.boot:spring-boot-starter-jetty' // undertow
     implementation 'org.mapstruct:mapstruct:1.6.3'
+    implementation 'org.springframework.boot:spring-boot-configuration-processor'
 
     compileOnly 'org.projectlombok:lombok'
 
