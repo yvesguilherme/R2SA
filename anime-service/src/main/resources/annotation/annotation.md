@@ -84,3 +84,14 @@ Um método HTTP é idempotente se uma requisição idêntica pode ser feita uma 
       - ```<configuration>```
         - ```<argLine>-Dspring.profiles.active=test</argLine>```
       - ```</configuration>```
+
+### Variáveis de ambiente
+- Podemos setar valores ‘default’ caso não tenha sido setado no ambiente. Colocamos a variável de ambiente seguido de ```:VALOR_DEFAULT```Exemplo:
+    ```yaml
+      server:
+        username: ${LOCAL_USERNAME:yvesguilhermeDefault}
+    ```
+- O Spring permite que realizar sobrescrever a propriedade do ```application.yml, application.yaml, application.properties``` seguindo um padrão: ```PROPRIEDADE_CHAVE=VALOR```, muito utilizadas em containers Kubernetes. Exemplo:
+    ```shell
+      SERVER_USERNAME=yvesguilherme
+    ```

@@ -1,6 +1,6 @@
 spring:
-  profiles:
-    active: postgresql
+#  profiles:
+#    active: postgresql
   application:
     name: anime-service
   threads:
@@ -23,9 +23,9 @@ server:
       max: 20
 
 database:
-  url: mysqlDNS:3306
-  username: yvesguilhermeMySQL
-  password: gokuMySQL
+  url: ${DB_URL:mysqlDNSDefault}:${DB_PORT:3306}/${DB_DATABASE:anime_local}
+  username: ${LOCAL_USERNAME:yvesguilhermeMySQLDefault}
+  password: ${LOCAL_PASSWORD:gokuMySQLDefault}
 
 application:
   title: Anime Service
