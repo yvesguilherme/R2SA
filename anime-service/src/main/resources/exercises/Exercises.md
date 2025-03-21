@@ -32,3 +32,13 @@
 
 * [x] Atualize todos os endpoints do **AnimeController** para utilizar classes diferentes para Requisição e Resposta.
 * [x] Você deve criar AnimePostRequest e AnimePostResponse para **POST** e AnimeGetResponse para **GET**
+
+
+### 5 - User Service
+
+<hr />
+
+* [x] Cria um serviço chamado **UserService**, este serviço deve ter um endpoint chamado **v1/users** com todas as operações CRUD.
+* [x] A classe de domínio deve ser User com os seguintes atributos: **long id**, **String firstName**, **String lastName** e **String email**.
+* [x] Seguir as boas práticas como, por exemplo, utilizar padrões de projetos, tests, alta coesão, etc.
+
