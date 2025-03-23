@@ -48,8 +48,8 @@ class UserHardCodedRepositoryTest {
   }
 
   @Test
-  @DisplayName("findById returns an User with given id")
-  void findById_ReturnsAnUserWithGivenId_WhenSuccessful() {
+  @DisplayName("findById returns a User with given id")
+  void findById_ReturnsAUserWithGivenId_WhenSuccessful() {
     BDDMockito.when(userData.getUserList()).thenReturn(userList);
 
     var expectedUser = userData.getUserList().getFirst();
@@ -143,8 +143,8 @@ class UserHardCodedRepositoryTest {
   }
 
   @Test
-  @DisplayName("findByEmail returns an User when email exists")
-  void findByEmail_ReturnsAnUser_WhenEmailExists() {
+  @DisplayName("findByEmail returns a User when email exists")
+  void findByEmail_ReturnsAUser_WhenEmailExists() {
     BDDMockito.when(userData.getUserList()).thenReturn(userList);
 
     var expectedUser = userData.getUserList().getLast();
@@ -157,8 +157,8 @@ class UserHardCodedRepositoryTest {
   }
 
   @Test
-  @DisplayName("save returns an User when successful")
-  void save_ReturnsAnUser_WhenSuccessful() {
+  @DisplayName("save returns a User when successful")
+  void save_ReturnsAUser_WhenSuccessful() {
     BDDMockito.when(userData.getUserList()).thenReturn(userList);
 
     var userToSave = userUtils.newUserToSave();
@@ -179,8 +179,8 @@ class UserHardCodedRepositoryTest {
   }
 
   @Test
-  @DisplayName("delete removes an User when successful")
-  void delete_RemovesAnUser_WhenSuccessful() {
+  @DisplayName("delete removes a User when successful")
+  void delete_RemovesAUser_WhenSuccessful() {
     BDDMockito.when(userData.getUserList()).thenReturn(userList);
 
     var userToDelete = userData.getUserList().getFirst();
@@ -195,8 +195,8 @@ class UserHardCodedRepositoryTest {
   }
 
   @Test
-  @DisplayName("update updates an User when successful")
-  void update_UpdatesAnUser_WhenSuccessful() {
+  @DisplayName("update updates a User when successful")
+  void update_UpdatesAUser_WhenSuccessful() {
     BDDMockito.when(userData.getUserList()).thenReturn(userList);
 
     var userToUpdate = userData.getUserList().getFirst();

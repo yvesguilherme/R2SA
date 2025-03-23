@@ -57,8 +57,8 @@ class UserServiceTest {
   }
 
   @Test
-  @DisplayName("findByIdOrThrowNotFound returns an User with given ID when successful")
-  void findByIdOrThrowNotFound_ReturnsAnUserWithGivenID_WhenSuccessful() {
+  @DisplayName("findByIdOrThrowNotFound returns a User with given ID when successful")
+  void findByIdOrThrowNotFound_ReturnsAUserWithGivenID_WhenSuccessful() {
     var expectedUser = userList.getFirst();
 
     BDDMockito.when(repository.findById(expectedUser.getId())).thenReturn(Optional.of(expectedUser));
@@ -149,8 +149,8 @@ class UserServiceTest {
   }
 
   @Test
-  @DisplayName("findByEmail returns an User with the same email when successful")
-  void findByEmail_ReturnsAnUserWithTheSameEmail_WhenSuccessful() {
+  @DisplayName("findByEmail returns a User with the same email when successful")
+  void findByEmail_ReturnsAUserWithTheSameEmail_WhenSuccessful() {
     var expectedUser = userList.getFirst();
 
     BDDMockito.when(repository.findByEmail(expectedUser.getEmail())).thenReturn(Optional.of(expectedUser));
@@ -177,8 +177,8 @@ class UserServiceTest {
   }
 
   @Test
-  @DisplayName("save returns an User when successful")
-  void save_ReturnsAnUser_WhenSuccessful() {
+  @DisplayName("save returns a User when successful")
+  void save_ReturnsAUser_WhenSuccessful() {
     var userToSave = userUtils.newUserToSave();
 
     BDDMockito.when(repository.save(userToSave)).thenReturn(userToSave);
@@ -234,8 +234,8 @@ class UserServiceTest {
   }
 
   @Test
-  @DisplayName("delete removes an User when successful")
-  void delete_RemovesAnUser_WhenSuccessful() {
+  @DisplayName("delete removes a User when successful")
+  void delete_RemovesAUser_WhenSuccessful() {
     var userToDelete = userList.getFirst();
 
     BDDMockito.when(repository.findById(userToDelete.getId())).thenReturn(Optional.of(userToDelete));
@@ -260,8 +260,8 @@ class UserServiceTest {
   }
 
   @Test
-  @DisplayName("update updates an User firsName when successful")
-  void update_UpdatesAnUserFirstName_WhenSuccessful() {
+  @DisplayName("update updates a User firsName when successful")
+  void update_UpdatesAUserFirstName_WhenSuccessful() {
     var userToUpdate = userList.getFirst();
     userToUpdate.setFirstName("Saitama");
 
@@ -276,8 +276,8 @@ class UserServiceTest {
   }
 
   @Test
-  @DisplayName("update updates an User lastName when successful")
-  void update_UpdatesAnUserLastName_WhenSuccessful() {
+  @DisplayName("update updates a User lastName when successful")
+  void update_UpdatesAUserLastName_WhenSuccessful() {
     var userToUpdate = userList.getFirst();
     userToUpdate.setLastName("Hatake");
 
@@ -292,8 +292,8 @@ class UserServiceTest {
   }
 
   @Test
-  @DisplayName("update updates an User email when successful")
-  void update_UpdatesAnUserEmail_WhenSuccessful() {
+  @DisplayName("update updates a User email when successful")
+  void update_UpdatesAUserEmail_WhenSuccessful() {
     var userToUpdate = userList.getFirst();
     userToUpdate.setEmail("sonGoku2025@gmail.com");
 

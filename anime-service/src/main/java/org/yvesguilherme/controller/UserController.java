@@ -34,7 +34,7 @@ public class UserController {
 
   @GetMapping("{id}")
   public ResponseEntity<UserGetResponse> findById(@PathVariable Long id) {
-    log.debug("Request to find an User by id: {}", id);
+    log.debug("Request to find a User by id: {}", id);
 
     var user = userService.findByIdOrThrowNotFound(id);
     var userGetResponse = userMapper.toUserGetResponse(user);
@@ -64,7 +64,7 @@ public class UserController {
 
   @GetMapping("email/{email}")
   public ResponseEntity<UserGetResponse> findByEmail(@PathVariable String email) {
-    log.debug("Request to find an User by email: {}", email);
+    log.debug("Request to find a User by email: {}", email);
 
     var user = userService.findByEmailOrThrowNotFound(email);
     var userGetResponse = userMapper.toUserGetResponse(user);
@@ -74,7 +74,7 @@ public class UserController {
 
   @PostMapping
   public ResponseEntity<UserPostResponse> save(@RequestBody UserPostRequest userPostRequest) {
-    log.debug("Request to save an User: {}", userPostRequest);
+    log.debug("Request to save a User: {}", userPostRequest);
 
     var userToSave = userMapper.toUser(userPostRequest);
     var userSaved = userService.save(userToSave);
@@ -85,7 +85,7 @@ public class UserController {
 
   @DeleteMapping("{id}")
   public ResponseEntity<Void> deleteById(@PathVariable Long id) {
-    log.debug("Request to delete an User by id: {}", id);
+    log.debug("Request to delete a User by id: {}", id);
 
     userService.delete(id);
 
@@ -94,7 +94,7 @@ public class UserController {
 
   @PutMapping
   public ResponseEntity<Void> update(@RequestBody UserPutRequest userPutRequest) {
-    log.debug("Request to update an User: {}", userPutRequest);
+    log.debug("Request to update a User: {}", userPutRequest);
 
     var userToUpdate = userMapper.toUser(userPutRequest);
 

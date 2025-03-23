@@ -19,9 +19,9 @@ public class UserUtils {
   public User newUserToSave() {
     return User.builder()
             .id(999L)
-            .firstName("Vegeta")
-            .lastName("Saiyan")
-            .email("vegeta@saiyan.com")
+            .firstName("Madara")
+            .lastName("Uchiha")
+            .email("uchiha@gods.com")
             .build();
   }
 }

@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "firstName": "Goku",
+    "lastName": "Saiyan",
+    "email": "goku@saiyan.com"
+  },
+  {
+    "id": 2,
+    "firstName": "Vegeta",
+    "lastName": "Saiyan",
+    "email": "vegeta@saiyan.com"
+  },
+  {
+    "id": 3,
+    "firstName": "Gohan",
+    "lastName": "Saiyan",
+    "email": "gohan@saiyan.com"
+  }
+]
