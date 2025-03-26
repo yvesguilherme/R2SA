@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 import org.yvesguilherme.commons.UserUtils;
 import org.yvesguilherme.domain.User;
+import org.yvesguilherme.exception.BadRequestException;
 import org.yvesguilherme.repository.UserHardCodedRepository;
 import org.yvesguilherme.validator.UserValidator;
 
@@ -30,9 +31,6 @@ class UserServiceTest {
   private UserHardCodedRepository repository;
 
   private List<User> userList;
-
-  @Mock
-  private UserValidator userValidator;
 
   @InjectMocks
   private UserUtils userUtils;
@@ -189,48 +187,6 @@ class UserServiceTest {
             .assertThat(savedUser)
             .hasNoNullFieldsOrProperties()
             .isEqualTo(userToSave);
-  }
-
-  @Test
-  @DisplayName("save throws IllegalArgumentException when User firstName is invalid")
-  void save_ThrowsIllegalArgumentException_WhenUserFirstNameIsInvalid() {
-    var userToSave = userUtils.newUserToSave();
-    userToSave.setFirstName("");
-
-    BDDMockito.doThrow(IllegalArgumentException.class).when(userValidator).validateUser(userToSave);
-
-    Assertions
-            .assertThatException()
-            .isThrownBy(() -> service.save(userToSave))
-            .isInstanceOf(IllegalArgumentException.class);
-  }
-
-  @Test
-  @DisplayName("save throws IllegalArgumentException when User lastName is invalid")
-  void save_ThrowsIllegalArgumentException_WhenUserLastNameIsInvalid() {
-    var userToSave = userUtils.newUserToSave();
-    userToSave.setLastName("");
-
-    BDDMockito.doThrow(IllegalArgumentException.class).when(userValidator).validateUser(userToSave);
-
-    Assertions
-            .assertThatException()
-            .isThrownBy(() -> service.save(userToSave))
-            .isInstanceOf(IllegalArgumentException.class);
-  }
-
-  @Test
-  @DisplayName("save throws IllegalArgumentException when User email is invalid")
-  void save_ThrowsIllegalArgumentException_WhenUserEmailIsInvalid() {
-    var userToSave = userUtils.newUserToSave();
-    userToSave.setEmail("");
-
-    BDDMockito.doThrow(IllegalArgumentException.class).when(userValidator).validateUser(userToSave);
-
-    Assertions
-            .assertThatException()
-            .isThrownBy(() -> service.save(userToSave))
-            .isInstanceOf(IllegalArgumentException.class);
   }
 
   @Test

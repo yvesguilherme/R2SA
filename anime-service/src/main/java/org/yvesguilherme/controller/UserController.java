@@ -1,5 +1,6 @@
 package org.yvesguilherme.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -73,7 +74,7 @@ public class UserController {
   }
 
   @PostMapping
-  public ResponseEntity<UserPostResponse> save(@RequestBody UserPostRequest userPostRequest) {
+  public ResponseEntity<UserPostResponse> save(@RequestBody @Valid UserPostRequest userPostRequest) {
     log.debug("Request to save a User: {}", userPostRequest);
 
     var userToSave = userMapper.toUser(userPostRequest);
@@ -93,7 +94,7 @@ public class UserController {
   }
 
   @PutMapping
-  public ResponseEntity<Void> update(@RequestBody UserPutRequest userPutRequest) {
+  public ResponseEntity<Void> update(@RequestBody @Valid UserPutRequest userPutRequest) {
     log.debug("Request to update a User: {}", userPutRequest);
 
     var userToUpdate = userMapper.toUser(userPutRequest);

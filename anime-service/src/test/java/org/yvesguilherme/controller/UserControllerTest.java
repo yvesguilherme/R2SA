@@ -1,5 +1,6 @@
 package org.yvesguilherme.controller;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,11 +19,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.yvesguilherme.commons.FileUtils;
 import org.yvesguilherme.commons.UserUtils;
 import org.yvesguilherme.domain.User;
-import org.yvesguilherme.exception.BadRequestException;
 import org.yvesguilherme.repository.UserData;
 import org.yvesguilherme.repository.UserHardCodedRepository;
 import org.yvesguilherme.service.UserService;
-import org.yvesguilherme.validator.UserValidator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,9 +45,6 @@ class UserControllerTest {
 
   @MockitoBean
   private UserData userData;
-
-  @MockitoBean
-  private UserValidator userValidator;
 
   @MockitoSpyBean
   private UserHardCodedRepository repository;
@@ -195,17 +191,11 @@ class UserControllerTest {
   }
 
   @Test
-  @DisplayName("POST v1/users throws BadRequestException when User firstName is empty")
-  void save_ThrowsBadRequestException_WhenUserFirstNameIsEmpty() throws Exception {
-    var request = fileUtils.readResourceFile("user/post-request-user-first-name-400.json");
-    var response = "The property firstName is invalid!";
+  @DisplayName("POST v1/users throws BadRequestException when fields are empty")
+  void save_ThrowsBadRequestException_WhenFieldsAreEmpty() throws Exception {
+    var request = fileUtils.readResourceFile("user/post-request-user-empty-fields-400.json");
 
-    BDDMockito
-            .doThrow(new BadRequestException(response))
-            .when(userValidator)
-            .validateUser(ArgumentMatchers.any(User.class));
-
-    mockMvc.perform(
+    var mvcResult = mockMvc.perform(
                     MockMvcRequestBuilders
                             .post(URL)
                             .contentType(MediaType.APPLICATION_JSON)
@@ -213,21 +203,27 @@ class UserControllerTest {
             )
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isBadRequest())
-            .andExpect(MockMvcResultMatchers.content().string(response));
+            .andReturn();
+
+    var resolvedException = mvcResult.getResolvedException();
+
+    Assertions.assertThat(resolvedException).isNotNull();
+
+    var fisrtNameError = "The field 'firstName' is required";
+    var lastNameError = "The field 'lastName' is required";
+    var emailError = "The field 'email' is required";
+
+    Assertions
+            .assertThat(resolvedException.getMessage())
+            .contains(fisrtNameError, lastNameError, emailError);
   }
 
   @Test
-  @DisplayName("POST v1/users throws BadRequestException when User lastName is empty")
-  void save_ThrowsBadRequestException_WhenUserLastNameIsEmpty() throws Exception {
-    var request = fileUtils.readResourceFile("user/post-request-user-last-name-400.json");
-    var response = "The property lastName is invalid!";
+  @DisplayName("POST v1/users throws BadRequestException when fields are blank")
+  void save_ThrowsBadRequestException_WhenFieldsAreBlank() throws Exception {
+    var request = fileUtils.readResourceFile("user/post-request-user-blank-fields-400.json");
 
-    BDDMockito
-            .doThrow(new BadRequestException(response))
-            .when(userValidator)
-            .validateUser(ArgumentMatchers.any(User.class));
-
-    mockMvc.perform(
+    var mvcResult = mockMvc.perform(
                     MockMvcRequestBuilders
                             .post(URL)
                             .contentType(MediaType.APPLICATION_JSON)
@@ -235,29 +231,19 @@ class UserControllerTest {
             )
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isBadRequest())
-            .andExpect(MockMvcResultMatchers.content().string(response));
-  }
+            .andReturn();
 
-  @Test
-  @DisplayName("POST v1/users throws BadRequestException when User email is empty")
-  void save_ThrowsBadRequestException_WhenUserEmailIsEmpty() throws Exception {
-    var request = fileUtils.readResourceFile("user/post-request-user-last-name-400.json");
-    var response = "The property email is invalid!";
+    var resolvedException = mvcResult.getResolvedException();
 
-    BDDMockito
-            .doThrow(new BadRequestException(response))
-            .when(userValidator)
-            .validateUser(ArgumentMatchers.any(User.class));
+    Assertions.assertThat(resolvedException).isNotNull();
 
-    mockMvc.perform(
-                    MockMvcRequestBuilders
-                            .post(URL)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(request)
-            )
-            .andDo(MockMvcResultHandlers.print())
-            .andExpect(MockMvcResultMatchers.status().isBadRequest())
-            .andExpect(MockMvcResultMatchers.content().string(response));
+    var fisrtNameError = "The field 'firstName' is required";
+    var lastNameError = "The field 'lastName' is required";
+    var emailError = "The field 'email' is required";
+
+    Assertions
+            .assertThat(resolvedException.getMessage())
+            .contains(fisrtNameError, lastNameError, emailError);
   }
 
   @Test

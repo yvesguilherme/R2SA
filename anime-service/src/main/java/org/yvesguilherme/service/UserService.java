@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.yvesguilherme.domain.User;
 import org.yvesguilherme.repository.UserHardCodedRepository;
-import org.yvesguilherme.validator.UserValidator;
 
 import java.util.List;
 
@@ -16,8 +15,6 @@ public class UserService {
   public static final String USER_NOT_FOUND = "User not found";
 
   private final UserHardCodedRepository repository;
-
-  private final UserValidator userValidator;
 
   public List<User> findAll() {
     return repository.findAll();
@@ -44,8 +41,6 @@ public class UserService {
   }
 
   public User save(User user) {
-    userValidator.validateUser(user);
-
     return repository.save(user);
   }
 
