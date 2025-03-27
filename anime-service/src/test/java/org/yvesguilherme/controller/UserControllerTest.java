@@ -35,6 +35,11 @@ import java.util.stream.Stream;
 @ComponentScan(basePackages = "org.yvesguilherme")
 class UserControllerTest {
   private static final String URL = "/users";
+  private static final String THE_FIELD_FIRST_NAME_IS_REQUIRED = "The field 'firstName' is required";
+  private static final String THE_FIELD_LAST_NAME_IS_REQUIRED = "The field 'lastName' is required";
+  private static final String THE_FIELD_EMAIL_IS_REQUIRED = "The field 'email' is required";
+  private static final String THE_FIELD_EMAIL_MUST_BE_A_VALID_E_MAIL = "The field 'email' must be a valid e-mail";
+  private static final String THE_FIELD_ID_CANNOT_BE_NULL = "The field 'id' cannot be null";
 
   @Autowired
   private MockMvc mockMvc;
@@ -221,13 +226,13 @@ class UserControllerTest {
   }
 
   private static Stream<Arguments> postUserBadRequestSource() {
-    var fisrtNameRequiredError = "The field 'firstName' is required";
-    var lastNameRequiredError = "The field 'lastName' is required";
-    var emailRequiredError = "The field 'email' is required";
-    var emailInvalidError = "The field 'email' must be a valid e-mail";
-
-    var allErrors = List.of(fisrtNameRequiredError, lastNameRequiredError, emailRequiredError);
-    var emailError = Collections.singletonList(emailInvalidError);
+    var allErrors = new ArrayList<>(
+            List.of(
+                    THE_FIELD_FIRST_NAME_IS_REQUIRED,
+                    THE_FIELD_LAST_NAME_IS_REQUIRED,
+                    THE_FIELD_EMAIL_IS_REQUIRED)
+    );
+    var emailError = Collections.singletonList(THE_FIELD_EMAIL_MUST_BE_A_VALID_E_MAIL);
 
     return Stream.of(
             Arguments.of("post-request-user-empty-fields-400.json", allErrors),
@@ -253,6 +258,31 @@ class UserControllerTest {
             .andExpect(MockMvcResultMatchers.status().isNoContent());
   }
 
+  @ParameterizedTest
+  @MethodSource("putUserBadRequestSource")
+  @DisplayName("PUT v1/users throws BadRequestException when fields are empty, blanck or invalid")
+  void put_ThrowsBadRequestException_WhenFieldsAreEmpty(String fileName, List<String> errors) throws Exception {
+    var request = fileUtils.readResourceFile("user/%s".formatted(fileName));
+
+    var mvcResult = mockMvc.perform(
+                    MockMvcRequestBuilders
+                            .put(URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(request)
+            )
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isBadRequest())
+            .andReturn();
+
+    var resolvedException = mvcResult.getResolvedException();
+
+    Assertions.assertThat(resolvedException).isNotNull();
+
+    Assertions
+            .assertThat(resolvedException.getMessage())
+            .contains(errors);
+  }
+
   @Test
   @DisplayName("PUT v1/users throws ResponseStatusException when User is not found")
   void update_ThrowsResponseStatusException_WhenUserIsNotFound() throws Exception {
@@ -268,6 +298,25 @@ class UserControllerTest {
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isNotFound())
             .andExpect(MockMvcResultMatchers.status().reason("User not found"));
+  }
+
+  private static Stream<Arguments> putUserBadRequestSource() {
+    var allErrors = new ArrayList<>(
+            List.of(
+                    THE_FIELD_FIRST_NAME_IS_REQUIRED,
+                    THE_FIELD_LAST_NAME_IS_REQUIRED,
+                    THE_FIELD_EMAIL_IS_REQUIRED
+            )
+    );
+    var emailError = Collections.singletonList(THE_FIELD_EMAIL_MUST_BE_A_VALID_E_MAIL);
+    var idNullError = Collections.singletonList(THE_FIELD_ID_CANNOT_BE_NULL);
+
+    return Stream.of(
+            Arguments.of("put-request-user-empty-fields-400.json", allErrors),
+            Arguments.of("put-request-user-blank-fields-400.json", allErrors),
+            Arguments.of("put-request-user-invalid-email-400.json", emailError),
+            Arguments.of("put-request-user-invalid-id-400.json", idNullError)
+    );
   }
 
   @Test
