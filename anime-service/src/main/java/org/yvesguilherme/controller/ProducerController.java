@@ -1,5 +1,6 @@
 package org.yvesguilherme.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -49,7 +50,7 @@ public class ProducerController {
           consumes = MediaType.APPLICATION_JSON_VALUE,
           headers = "x-api-key=1234"
   )
-  public ResponseEntity<ProducerPostResponse> save(@RequestBody ProducerPostRequest producerPostRequest, @RequestHeader HttpHeaders httpHeaders) {
+  public ResponseEntity<ProducerPostResponse> save(@RequestBody @Valid ProducerPostRequest producerPostRequest, @RequestHeader HttpHeaders httpHeaders) {
     log.info("{}", httpHeaders);
 
     var producer = producerMapper.toProducer(producerPostRequest);
@@ -69,7 +70,7 @@ public class ProducerController {
   }
 
   @PutMapping
-  public ResponseEntity<Void> update(@RequestBody ProducerPutRequest producerPutRequest) {
+  public ResponseEntity<Void> update(@RequestBody @Valid ProducerPutRequest producerPutRequest) {
     log.debug("Request to update producer: {}", producerPutRequest);
 
     var producerToUpdate = producerMapper.toProducer(producerPutRequest);

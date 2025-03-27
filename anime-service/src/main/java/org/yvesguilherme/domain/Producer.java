@@ -1,7 +1,10 @@
 package org.yvesguilherme.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -13,7 +16,6 @@ public class Producer {
   @EqualsAndHashCode.Include
   private Long id;
 
-  @NonNull
   @JsonProperty("name")
   private String name;
 

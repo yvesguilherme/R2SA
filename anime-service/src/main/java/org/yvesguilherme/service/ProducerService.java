@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.yvesguilherme.domain.Producer;
-import org.yvesguilherme.exception.BadRequestException;
 import org.yvesguilherme.repository.ProducerHardCodedRepository;
 import org.yvesguilherme.util.enums.ProducerEnum;
 
@@ -27,10 +26,6 @@ public class ProducerService {
   }
 
   public Producer save(Producer producer) {
-    if (producer.getName().isEmpty()) {
-      throw new BadRequestException("The property name is invalid!");
-    }
-
     return producerHardCodedRepository.save(producer);
   }
 

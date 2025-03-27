@@ -17,8 +17,8 @@ public interface ProducerMapper {
    * Source está no parâmetro (ProducerPostRequest)
    * Target está no que você irá retornar (Producer)
    */
-  @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
   @Mapping(target = "id", expression = "java(java.util.concurrent.ThreadLocalRandom.current().nextLong(100_000))")
+  @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
   Producer toProducer(ProducerPostRequest postRequest);
 
   @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")

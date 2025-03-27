@@ -1,8 +1,12 @@
 package org.yvesguilherme.controller;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +28,9 @@ import org.yvesguilherme.repository.ProducerData;
 import org.yvesguilherme.repository.ProducerHardCodedRepository;
 import org.yvesguilherme.service.ProducerService;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 @WebMvcTest(controllers = ProducerController.class)
 @Import({
@@ -40,6 +46,8 @@ import java.util.List;
 //@ActiveProfiles("test")
 class ProducerControllerTest {
   private static final String URL = "/producers";
+  private static final String THE_FIELD_NAME_IS_REQUIRED = "The field 'name' is required";
+  private static final String THE_FIELD_ID_CANNOT_BE_NULL = "The field 'id' cannot be null";
 
   @Autowired
   private MockMvc mockMvc;
@@ -151,6 +159,78 @@ class ProducerControllerTest {
             .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
             .andExpect(MockMvcResultMatchers.status().isCreated())
             .andExpect(MockMvcResultMatchers.content().json(response));
+  }
+
+  @ParameterizedTest
+  @MethodSource("postBadRequestResource")
+  @DisplayName("POST /producers throws BadRequestException when fields are empty, blanck or invalid")
+  void save_ThrowsBadRequestException_WhenFieldsAreEmptyBlanckOrInvalid(String fileName, List<String> errors) throws Exception {
+    var request = fileUtils.readResourceFile("producer/%s".formatted(fileName));
+
+    var mvcResult = mockMvc.perform(
+                    MockMvcRequestBuilders
+                            .post(URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header("x-api-key", "1234")
+                            .content(request)
+            )
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isBadRequest())
+            .andReturn();
+
+    var resolvedException = mvcResult.getResolvedException();
+
+    Assertions.assertThat(resolvedException).isNotNull();
+
+    Assertions
+            .assertThat(resolvedException.getMessage())
+            .contains(errors);
+  }
+
+  private static Stream<Arguments> postBadRequestResource() {
+    var fieldNameError = Collections.singletonList(THE_FIELD_NAME_IS_REQUIRED);
+
+    return Stream.of(
+            Arguments.of("post-request-producer-blank-400.json", fieldNameError),
+            Arguments.of("post-request-producer-empty-400.json", fieldNameError)
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource("putBadRequestResource")
+  @DisplayName("POST /producers throws BadRequestException when fields are empty, blanck or invalid")
+  void update_ThrowsBadRequestException_WhenFieldsAreEmptyBlanckOrInvalid(String fileName, List<String> errors) throws Exception {
+    var request = fileUtils.readResourceFile("producer/%s".formatted(fileName));
+
+    var mvcResult = mockMvc.perform(
+                    MockMvcRequestBuilders
+                            .put(URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .header("x-api-key", "1234")
+                            .content(request)
+            )
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isBadRequest())
+            .andReturn();
+
+    var resolvedException = mvcResult.getResolvedException();
+
+    Assertions.assertThat(resolvedException).isNotNull();
+
+    Assertions
+            .assertThat(resolvedException.getMessage())
+            .contains(errors);
+  }
+
+  private static Stream<Arguments> putBadRequestResource() {
+    var fieldIdError = Collections.singletonList(THE_FIELD_ID_CANNOT_BE_NULL);
+    var fieldNameError = Collections.singletonList(THE_FIELD_NAME_IS_REQUIRED);
+
+    return Stream.of(
+            Arguments.of("post-request-producer-blank-400.json", fieldNameError),
+            Arguments.of("post-request-producer-empty-400.json", fieldNameError),
+            Arguments.of("post-request-producer-id-null-400.json", fieldIdError)
+    );
   }
 
   @Test

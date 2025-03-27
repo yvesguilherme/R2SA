@@ -10,10 +10,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 import org.yvesguilherme.commons.ProducerUtils;
 import org.yvesguilherme.domain.Producer;
-import org.yvesguilherme.exception.BadRequestException;
 import org.yvesguilherme.repository.ProducerHardCodedRepository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -116,18 +114,6 @@ class ProducerServiceTest {
     var savedProducer = service.save(producerToSave);
 
     Assertions.assertThat(savedProducer).isEqualTo(producerToSave).hasNoNullFieldsOrProperties();
-  }
-
-  @Test
-  @DisplayName("save throws BadRequestException when producer name is empty")
-  @Order(7)
-  void saveThrowsBadRequestExceptionWhenProducerNameIsEmpty() {
-    var producerToSave = Producer.builder().id(99L).name("").createdAt(LocalDateTime.now()).build();
-
-    Assertions
-            .assertThatException()
-            .isThrownBy(() -> service.save(producerToSave))
-            .isInstanceOf(BadRequestException.class);
   }
 
   @Test
