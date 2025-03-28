@@ -1,8 +1,12 @@
 package org.yvesguilherme.controller;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +27,16 @@ import org.yvesguilherme.repository.AnimeHardCodedRepository;
 import org.yvesguilherme.service.AnimeService;
 import org.yvesguilherme.util.Constants;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 @WebMvcTest(controllers = AnimeController.class)
 @ComponentScan(basePackages = "org.yvesguilherme")
 class AnimeControllerTest {
   private static final String URL = "/animes";
+  private static final String THE_FIELD_NAME_IS_REQUIRED = "The field 'name' is required";
+  private static final String THE_FIELD_ID_CANNOT_BE_NULL = "The field 'id' cannot be null";
 
   @Autowired
   private MockMvc mockMvc;
@@ -161,12 +169,13 @@ class AnimeControllerTest {
             .andExpect(MockMvcResultMatchers.content().json(response));
   }
 
-  @Test
-  @DisplayName("POST /anime throws BadRequestException when anime name is empty")
-  void save_ThrowsBadRequestException_WhenAnimeNameIsEmpty() throws Exception {
-    var request = fileUtils.readResourceFile("anime/post-request-anime-400.json");
+  @ParameterizedTest
+  @MethodSource("postBadRequestResource")
+  @DisplayName("POST /anime throws BadRequestException when fields are empty, blank or invalid")
+  void save_ThrowsBadRequestException_WhenFieldsAreEmptyBlankOrInvalid(String fileName, List<String> errors) throws Exception {
+    var request = fileUtils.readResourceFile("anime/%s".formatted(fileName));
 
-    mockMvc.perform(
+    var mvcResult = mockMvc.perform(
                     MockMvcRequestBuilders
                             .post(URL)
                             .contentType(MediaType.APPLICATION_JSON)
@@ -174,7 +183,57 @@ class AnimeControllerTest {
             )
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isBadRequest())
-            .andExpect(MockMvcResultMatchers.content().string("The property name is invalid!"));
+            .andReturn();
+
+    var resolvedException = mvcResult.getResolvedException();
+
+    Assertions.assertThat(resolvedException).isNotNull();
+
+
+    Assertions
+            .assertThat(resolvedException.getMessage())
+            .contains(errors);
+  }
+
+  private static Stream<Arguments> postBadRequestResource() {
+    return Stream.of(
+            Arguments.of("post-request-anime-blank-400.json", Collections.singletonList(THE_FIELD_NAME_IS_REQUIRED)),
+            Arguments.of("post-request-anime-empty-400.json", Collections.singletonList(THE_FIELD_NAME_IS_REQUIRED))
+    );
+  }
+
+  @ParameterizedTest
+  @MethodSource("putBadRequestResource")
+  @DisplayName("PUT /anime throws BadRequestException when fields are empty, blank or invalid")
+  void put_ThrowsBadRequestException_WhenFieldsAreEmptyBlankOrInvalid(String fileName, List<String> errors) throws Exception {
+    var request = fileUtils.readResourceFile("anime/%s".formatted(fileName));
+
+    var mvcResult = mockMvc.perform(
+                    MockMvcRequestBuilders
+                            .put(URL)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(request)
+            )
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isBadRequest())
+            .andReturn();
+
+    var resolvedException = mvcResult.getResolvedException();
+
+    Assertions.assertThat(resolvedException).isNotNull();
+
+
+    Assertions
+            .assertThat(resolvedException.getMessage())
+            .contains(errors);
+  }
+
+  private static Stream<Arguments> putBadRequestResource() {
+    return Stream.of(
+            Arguments.of("put-request-anime-blank-400.json", Collections.singletonList(THE_FIELD_NAME_IS_REQUIRED)),
+            Arguments.of("put-request-anime-empty-400.json", Collections.singletonList(THE_FIELD_NAME_IS_REQUIRED)),
+            Arguments.of("put-request-anime-id-null-400.json", Collections.singletonList(THE_FIELD_ID_CANNOT_BE_NULL))
+    );
   }
 
   @Test

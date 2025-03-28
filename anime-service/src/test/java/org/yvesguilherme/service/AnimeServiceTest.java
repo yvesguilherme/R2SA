@@ -10,7 +10,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 import org.yvesguilherme.commons.AnimeUtils;
 import org.yvesguilherme.domain.Anime;
-import org.yvesguilherme.exception.BadRequestException;
 import org.yvesguilherme.repository.AnimeHardCodedRepository;
 
 import java.util.List;
@@ -125,18 +124,6 @@ class AnimeServiceTest {
     var savedAnime = service.save(animeToSave);
 
     Assertions.assertThat(savedAnime).isEqualTo(animeToSave).hasNoNullFieldsOrProperties();
-  }
-
-  @Test
-  @DisplayName("save throws BadRequestException when anime name is empty")
-  @Order(7)
-  void saveThrowsBadRequestExceptionWhenAnimeNameIsEmpty() {
-    var animeToSave = Anime.builder().id(929L).name("").build();
-
-    Assertions
-            .assertThatException()
-            .isThrownBy(() -> service.save(animeToSave))
-            .isInstanceOf(BadRequestException.class);
   }
 
   @Test

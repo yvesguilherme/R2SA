@@ -202,8 +202,8 @@ class UserControllerTest {
 
   @ParameterizedTest
   @MethodSource("postUserBadRequestSource")
-  @DisplayName("POST v1/users throws BadRequestException when fields are empty, blanck or invalid")
-  void save_ThrowsBadRequestException_WhenFieldsAreEmpty(String fileName, List<String> errors) throws Exception {
+  @DisplayName("POST v1/users throws BadRequestException when fields are empty, blank or invalid")
+  void save_ThrowsBadRequestException_WhenFieldsAreEmptyBlankOrInvalid(String fileName, List<String> errors) throws Exception {
     var request = fileUtils.readResourceFile("user/%s".formatted(fileName));
 
     var mvcResult = mockMvc.perform(
@@ -260,8 +260,8 @@ class UserControllerTest {
 
   @ParameterizedTest
   @MethodSource("putUserBadRequestSource")
-  @DisplayName("PUT v1/users throws BadRequestException when fields are empty, blanck or invalid")
-  void put_ThrowsBadRequestException_WhenFieldsAreEmpty(String fileName, List<String> errors) throws Exception {
+  @DisplayName("PUT v1/users throws BadRequestException when fields are empty, blank or invalid")
+  void put_ThrowsBadRequestException_WhenFieldsAreEmptyBlankOrInvalid(String fileName, List<String> errors) throws Exception {
     var request = fileUtils.readResourceFile("user/%s".formatted(fileName));
 
     var mvcResult = mockMvc.perform(

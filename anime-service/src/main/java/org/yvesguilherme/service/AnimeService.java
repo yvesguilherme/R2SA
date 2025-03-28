@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.yvesguilherme.domain.Anime;
-import org.yvesguilherme.exception.BadRequestException;
 import org.yvesguilherme.repository.AnimeHardCodedRepository;
 import org.yvesguilherme.util.enums.AnimeEnum;
 
@@ -27,10 +26,6 @@ public class AnimeService {
   }
 
   public Anime save(Anime anime) {
-    if (anime.getName().isEmpty()) {
-      throw new BadRequestException("The property name is invalid!");
-    }
-
     return animeHardCodedRepository.save(anime);
   }
 

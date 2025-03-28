@@ -1,5 +1,6 @@
 package org.yvesguilherme.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -53,7 +54,7 @@ public class AnimeController {
   }
 
   @PostMapping
-  public ResponseEntity<AnimePostResponse> save(@RequestBody AnimePostRequest animePostRequest) {
+  public ResponseEntity<AnimePostResponse> save(@RequestBody @Valid AnimePostRequest animePostRequest) {
     log.debug("Request to save anime: {}", animePostRequest);
 
     var anime = animeMapper.toAnime(animePostRequest);
@@ -73,7 +74,7 @@ public class AnimeController {
   }
 
   @PutMapping
-  public ResponseEntity<Void> update(@RequestBody AnimePutRequest animePutRequest) {
+  public ResponseEntity<Void> update(@RequestBody @Valid AnimePutRequest animePutRequest) {
     log.debug("Request to update anime: {}", animePutRequest);
 
     var animeUpdated = animeMapper.toAnime(animePutRequest);

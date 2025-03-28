@@ -163,8 +163,8 @@ class ProducerControllerTest {
 
   @ParameterizedTest
   @MethodSource("postBadRequestResource")
-  @DisplayName("POST /producers throws BadRequestException when fields are empty, blanck or invalid")
-  void save_ThrowsBadRequestException_WhenFieldsAreEmptyBlanckOrInvalid(String fileName, List<String> errors) throws Exception {
+  @DisplayName("POST /producers throws BadRequestException when fields are empty, blank or invalid")
+  void save_ThrowsBadRequestException_WhenFieldsAreEmptyBlankOrInvalid(String fileName, List<String> errors) throws Exception {
     var request = fileUtils.readResourceFile("producer/%s".formatted(fileName));
 
     var mvcResult = mockMvc.perform(
@@ -198,8 +198,8 @@ class ProducerControllerTest {
 
   @ParameterizedTest
   @MethodSource("putBadRequestResource")
-  @DisplayName("POST /producers throws BadRequestException when fields are empty, blanck or invalid")
-  void update_ThrowsBadRequestException_WhenFieldsAreEmptyBlanckOrInvalid(String fileName, List<String> errors) throws Exception {
+  @DisplayName("POST /producers throws BadRequestException when fields are empty, blank or invalid")
+  void update_ThrowsBadRequestException_WhenFieldsAreEmptyBlankOrInvalid(String fileName, List<String> errors) throws Exception {
     var request = fileUtils.readResourceFile("producer/%s".formatted(fileName));
 
     var mvcResult = mockMvc.perform(
