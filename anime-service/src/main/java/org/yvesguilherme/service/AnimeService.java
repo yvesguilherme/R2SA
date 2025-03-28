@@ -1,10 +1,9 @@
 package org.yvesguilherme.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import org.yvesguilherme.domain.Anime;
+import org.yvesguilherme.exception.NotFoundException;
 import org.yvesguilherme.repository.AnimeHardCodedRepository;
 import org.yvesguilherme.util.enums.AnimeEnum;
 
@@ -22,7 +21,7 @@ public class AnimeService {
   public Anime findByIdOrThrowNotFound(Long id) {
     return animeHardCodedRepository
             .findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, AnimeEnum.NOT_FOUND.getMessage()));
+            .orElseThrow(() -> new NotFoundException(AnimeEnum.NOT_FOUND.getMessage()));
   }
 
   public Anime save(Anime anime) {

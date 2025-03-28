@@ -1,6 +1,6 @@
 spring:
-#  profiles:
-#    active: postgresql
+  #  profiles:
+  #    active: postgresql
   application:
     name: anime-service
   threads:
@@ -14,7 +14,7 @@ logging:
 
 server:
   servlet:
-#    context-path: /${spring.application.name}/v1
+    #    context-path: /${spring.application.name}/v1
     context-path: /v1
   error:
     include-stacktrace: on_param

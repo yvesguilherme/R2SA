@@ -1,10 +1,9 @@
 package org.yvesguilherme.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import org.yvesguilherme.domain.Producer;
+import org.yvesguilherme.exception.NotFoundException;
 import org.yvesguilherme.repository.ProducerHardCodedRepository;
 import org.yvesguilherme.util.enums.ProducerEnum;
 
@@ -22,7 +21,7 @@ public class ProducerService {
   public Producer findByIdOrThrowNotFound(Long id) {
     return producerHardCodedRepository
             .findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ProducerEnum.NOT_FOUND.getMessage()));
+            .orElseThrow(() -> new NotFoundException(ProducerEnum.NOT_FOUND.getMessage()));
   }
 
   public Producer save(Producer producer) {

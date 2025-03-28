@@ -9,9 +9,9 @@ import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.server.ResponseStatusException;
 import org.yvesguilherme.commons.UserUtils;
 import org.yvesguilherme.domain.User;
+import org.yvesguilherme.exception.NotFoundException;
 import org.yvesguilherme.repository.UserHardCodedRepository;
 
 import java.util.Collections;
@@ -68,8 +68,8 @@ class UserServiceTest {
   }
 
   @Test
-  @DisplayName("findByIdOrThrowNotFound throws ResponseStatusException when User is not found")
-  void findByIdOrThrowNotFound_ThrowsResponseStatusException_WhenUserIsNotFound() {
+  @DisplayName("findByIdOrThrowNotFound throws NotFoundException when User is not found")
+  void findByIdOrThrowNotFound_ThrowsNotFoundException_WhenUserIsNotFound() {
     var expectedUser = userList.getFirst();
 
     BDDMockito.when(repository.findById(expectedUser.getId())).thenReturn(Optional.empty());
@@ -77,7 +77,7 @@ class UserServiceTest {
     Assertions
             .assertThatException()
             .isThrownBy(() -> service.findByIdOrThrowNotFound(expectedUser.getId()))
-            .isInstanceOf(ResponseStatusException.class);
+            .isInstanceOf(NotFoundException.class);
   }
 
   @Test
@@ -160,8 +160,8 @@ class UserServiceTest {
   }
 
   @Test
-  @DisplayName("findByEmail throws ResponseStatusException when User email is not found")
-  void findByEmail_ThrowsResponseStatusExceptionWhenUserEmailIsNotFound() {
+  @DisplayName("findByEmail throws NotFoundException when User email is not found")
+  void findByEmail_ThrowsNotFoundExceptionWhenUserEmailIsNotFound() {
     var emailNotFound = "not_found@notfound.com";
 
     BDDMockito.when(repository.findByEmail(emailNotFound)).thenReturn(Optional.empty());
@@ -169,7 +169,7 @@ class UserServiceTest {
     Assertions
             .assertThatException()
             .isThrownBy(() -> service.findByEmailOrThrowNotFound(emailNotFound))
-            .isInstanceOf(ResponseStatusException.class);
+            .isInstanceOf(NotFoundException.class);
   }
 
   @Test
@@ -201,8 +201,8 @@ class UserServiceTest {
   }
 
   @Test
-  @DisplayName("delete throws ResponseStatusException when User is not found")
-  void delete_ThrowsResponseStatusException_WhenUserIsNotFound() {
+  @DisplayName("delete throws NotFoundException when User is not found")
+  void delete_ThrowsNotFoundException_WhenUserIsNotFound() {
     var userToDelete = userList.getFirst();
 
     BDDMockito.when(repository.findById(userToDelete.getId())).thenReturn(Optional.empty());
@@ -210,7 +210,7 @@ class UserServiceTest {
     Assertions
             .assertThatException()
             .isThrownBy(() -> service.delete(userToDelete.getId()))
-            .isInstanceOf(ResponseStatusException.class);
+            .isInstanceOf(NotFoundException.class);
   }
 
   @Test
@@ -262,8 +262,8 @@ class UserServiceTest {
   }
 
   @Test
-  @DisplayName("update throws ResponseStatusException when User is not found")
-  void update_ThrowsResponseStatusException_WhenUserIsNotFound() {
+  @DisplayName("update throws NotFoundException when User is not found")
+  void update_ThrowsNotFoundException_WhenUserIsNotFound() {
     var userToUpdate = userList.getFirst();
 
     BDDMockito.when(repository.findById(userToUpdate.getId())).thenReturn(Optional.empty());
@@ -271,6 +271,6 @@ class UserServiceTest {
     Assertions
             .assertThatException()
             .isThrownBy(() -> service.update(userToUpdate))
-            .isInstanceOf(ResponseStatusException.class);
+            .isInstanceOf(NotFoundException.class);
   }
 }

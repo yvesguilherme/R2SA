@@ -1,10 +1,9 @@
 package org.yvesguilherme.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import org.yvesguilherme.domain.User;
+import org.yvesguilherme.exception.NotFoundException;
 import org.yvesguilherme.repository.UserHardCodedRepository;
 
 import java.util.List;
@@ -23,7 +22,7 @@ public class UserService {
   public User findByIdOrThrowNotFound(Long id) {
     return repository
             .findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, USER_NOT_FOUND));
+            .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
   }
 
   public List<User> findByFirstName(String firstName) {
@@ -37,7 +36,7 @@ public class UserService {
   public User findByEmailOrThrowNotFound(String email) {
     return repository
             .findByEmail(email)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, USER_NOT_FOUND));
+            .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
   }
 
   public User save(User user) {

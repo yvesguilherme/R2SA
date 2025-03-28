@@ -7,9 +7,9 @@ import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.server.ResponseStatusException;
 import org.yvesguilherme.commons.ProducerUtils;
 import org.yvesguilherme.domain.Producer;
+import org.yvesguilherme.exception.NotFoundException;
 import org.yvesguilherme.repository.ProducerHardCodedRepository;
 
 import java.util.List;
@@ -90,9 +90,9 @@ class ProducerServiceTest {
   }
 
   @Test
-  @DisplayName("findById throws ResponseStatusException when producer is not found")
+  @DisplayName("findById throws NotFoundException when producer is not found")
   @Order(5)
-  void findByIdThrowsResponseStatusExceptionWhenProducerIsNotFound() {
+  void findByIdThrowsNotFoundExceptionWhenProducerIsNotFound() {
     var expectedProducer = producerList.getFirst();
 
     BDDMockito.when(repository.findById(expectedProducer.getId())).thenReturn(Optional.empty());
@@ -100,7 +100,7 @@ class ProducerServiceTest {
     Assertions
             .assertThatException()
             .isThrownBy(() -> service.findByIdOrThrowNotFound(expectedProducer.getId()))
-            .isInstanceOf(ResponseStatusException.class);
+            .isInstanceOf(NotFoundException.class);
   }
 
   @Test
@@ -131,9 +131,9 @@ class ProducerServiceTest {
   }
 
   @Test
-  @DisplayName("delete throws ResponseStatusException when producer is not found")
+  @DisplayName("delete throws NotFoundException when producer is not found")
   @Order(9)
-  void deleteThrowsResponseStatusExceptionWhenProducerIsNotFound() {
+  void deleteThrowsNotFoundExceptionWhenProducerIsNotFound() {
     var producerToDelete = producerList.getFirst();
 
     BDDMockito.when(repository.findById(producerToDelete.getId())).thenReturn(Optional.empty());
@@ -141,7 +141,7 @@ class ProducerServiceTest {
     Assertions
             .assertThatException()
             .isThrownBy(() -> service.delete(producerToDelete.getId()))
-            .isInstanceOf(ResponseStatusException.class);
+            .isInstanceOf(NotFoundException.class);
   }
 
   @Test
@@ -162,9 +162,9 @@ class ProducerServiceTest {
   }
 
   @Test
-  @DisplayName("update throws ResponseStatusException when producer is not found")
+  @DisplayName("update throws NotFoundException when producer is not found")
   @Order(11)
-  void updateThrowsResponseStatusExceptionWhenProducerIsNotFound() {
+  void updateThrowsNotFoundExceptionWhenProducerIsNotFound() {
     var producerToUpdate = producerList.getFirst();
 
     BDDMockito.when(repository.findById(producerToUpdate.getId())).thenReturn(Optional.empty());
@@ -172,6 +172,6 @@ class ProducerServiceTest {
     Assertions
             .assertThatException()
             .isThrownBy(() -> service.update(producerToUpdate))
-            .isInstanceOf(ResponseStatusException.class);
+            .isInstanceOf(NotFoundException.class);
   }
 }
