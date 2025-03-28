@@ -76,7 +76,7 @@ class ProducerControllerTest {
   void findAll_ReturnsAListWithAllProducers_WhenArgumentIsNull() throws Exception {
     BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados, devemos mocá-los.
 
-    var response = fileUtils.readResourceFile("producer/get-producer-null-name-200.json");
+    var response = fileUtils.readResourceFile("producer/get/get-producer-null-name-200.json");
 
     mockMvc.perform(MockMvcRequestBuilders.get(URL))
             .andDo(MockMvcResultHandlers.print())
@@ -89,7 +89,7 @@ class ProducerControllerTest {
   void findAll_ReturnsAListWithFoundObject_WhenNameExists() throws Exception {
     BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados, devemos mocá-los.
 
-    var response = fileUtils.readResourceFile("producer/get-producer-ufotable-name-200.json");
+    var response = fileUtils.readResourceFile("producer/get/get-producer-ufotable-name-200.json");
     var name = "Ufotable";
 
     mockMvc.perform(MockMvcRequestBuilders.get(URL).param("name", name))
@@ -103,7 +103,7 @@ class ProducerControllerTest {
   void findAll_ReturnsAnEmptyList_WhenNameIsNotFound() throws Exception {
     BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados, devemos mocá-los.
 
-    var response = fileUtils.readResourceFile("producer/get-producer-x-name-200.json");
+    var response = fileUtils.readResourceFile("producer/get/get-producer-x-name-200.json");
     var name = "x";
 
     mockMvc.perform(MockMvcRequestBuilders.get(URL).param("name", name))
@@ -117,7 +117,7 @@ class ProducerControllerTest {
   void findById_ReturnsAProducerWithGivenId_WhenSuccessful() throws Exception {
     BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados
 
-    var response = fileUtils.readResourceFile("producer/get-producer-by-id-1-200.json");
+    var response = fileUtils.readResourceFile("producer/get/get-producer-by-id-1-200.json");
     var id = 1;
 
     mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{id}", id))
@@ -142,8 +142,8 @@ class ProducerControllerTest {
   @Test
   @DisplayName("POST /producers creates a Producer when successful")
   void save_CreatesAProducer_WhenSuccessful() throws Exception {
-    var request = fileUtils.readResourceFile("producer/post-request-producer-200.json");
-    var response = fileUtils.readResourceFile("producer/post-response-producer-201.json");
+    var request = fileUtils.readResourceFile("producer/post/post-request-producer-200.json");
+    var response = fileUtils.readResourceFile("producer/post/post-response-producer-201.json");
     var producerToSave = producerUtils.newProducerToSave("Aniplex");
 
     BDDMockito.when(repository.save(ArgumentMatchers.any())).thenReturn(producerToSave);
@@ -191,8 +191,8 @@ class ProducerControllerTest {
     var fieldNameError = Collections.singletonList(THE_FIELD_NAME_IS_REQUIRED);
 
     return Stream.of(
-            Arguments.of("post-request-producer-blank-400.json", fieldNameError),
-            Arguments.of("post-request-producer-empty-400.json", fieldNameError)
+            Arguments.of("post/post-request-producer-blank-400.json", fieldNameError),
+            Arguments.of("post/post-request-producer-empty-400.json", fieldNameError)
     );
   }
 
@@ -227,9 +227,9 @@ class ProducerControllerTest {
     var fieldNameError = Collections.singletonList(THE_FIELD_NAME_IS_REQUIRED);
 
     return Stream.of(
-            Arguments.of("post-request-producer-blank-400.json", fieldNameError),
-            Arguments.of("post-request-producer-empty-400.json", fieldNameError),
-            Arguments.of("post-request-producer-id-null-400.json", fieldIdError)
+            Arguments.of("put/put-request-producer-blank-400.json", fieldNameError),
+            Arguments.of("put/put-request-producer-empty-400.json", fieldNameError),
+            Arguments.of("put/put-request-producer-id-null-400.json", fieldIdError)
     );
   }
 
@@ -238,7 +238,7 @@ class ProducerControllerTest {
   void update_UpdatesAProducer_WhenSuccessful() throws Exception {
     BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados, devemos mocá-los.
 
-    var request = fileUtils.readResourceFile("producer/put-request-producer-200.json");
+    var request = fileUtils.readResourceFile("producer/put/put-request-producer-200.json");
 
     mockMvc.perform(
                     MockMvcRequestBuilders
@@ -255,7 +255,7 @@ class ProducerControllerTest {
   void update_ThrowsResponseStatusException_WhenProducerIsNotFound() throws Exception {
     BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados
 
-    var request = fileUtils.readResourceFile("producer/put-request-producer-404.json");
+    var request = fileUtils.readResourceFile("producer/put/put-request-producer-404.json");
 
     mockMvc.perform(
                     MockMvcRequestBuilders

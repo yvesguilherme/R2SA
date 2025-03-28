@@ -71,7 +71,7 @@ class UserControllerTest {
   void findAll_ReturnsListOfUsers_WhenSuccessful() throws Exception {
     BDDMockito.when(userData.getUserList()).thenReturn(listUsers);
 
-    var response = fileUtils.readResourceFile("user/get-user-200.json");
+    var response = fileUtils.readResourceFile("user/get/get-user-200.json");
 
     mockMvc.perform(MockMvcRequestBuilders.get(URL))
             .andDo(MockMvcResultHandlers.print())
@@ -85,7 +85,7 @@ class UserControllerTest {
   void findById_ReturnsAUser_WhenSuccessful() throws Exception {
     BDDMockito.when(userData.getUserList()).thenReturn(listUsers);
 
-    var response = fileUtils.readResourceFile("user/get-user-id-200.json");
+    var response = fileUtils.readResourceFile("user/get/get-user-id-200.json");
     var id = 2;
 
     mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{id}", id))
@@ -100,7 +100,7 @@ class UserControllerTest {
   void findByFirstName_ReturnsAListOfUsers_WhenFirstNameExists() throws Exception {
     BDDMockito.when(userData.getUserList()).thenReturn(listUsers);
 
-    var response = fileUtils.readResourceFile("user/get-user-first-name-200.json");
+    var response = fileUtils.readResourceFile("user/get/get-user-first-name-200.json");
     var firstName = "Goku";
 
     mockMvc.perform(MockMvcRequestBuilders.get(URL + "/firstName/{firstName}", firstName))
@@ -114,7 +114,7 @@ class UserControllerTest {
   void findByFirstName_ReturnsAnEmptyList_WhenFirstNameIsNotFound() throws Exception {
     BDDMockito.when(userData.getUserList()).thenReturn(listUsers);
 
-    var response = fileUtils.readResourceFile("user/get-user-first-name-not-found-200.json");
+    var response = fileUtils.readResourceFile("user/get/get-user-first-name-not-found-200.json");
     var firstName = "Naruto";
 
     mockMvc.perform(MockMvcRequestBuilders.get(URL + "/firstName/{firstName}", firstName))
@@ -128,7 +128,7 @@ class UserControllerTest {
   void findByLastName_ReturnsAListOfUsers_WhenLastNameExists() throws Exception {
     BDDMockito.when(userData.getUserList()).thenReturn(listUsers);
 
-    var response = fileUtils.readResourceFile("user/get-user-last-name-200.json");
+    var response = fileUtils.readResourceFile("user/get/get-user-last-name-200.json");
     var lastName = "Saiyan";
 
     mockMvc.perform(MockMvcRequestBuilders.get(URL + "/lastName/{lastName}", lastName))
@@ -142,7 +142,7 @@ class UserControllerTest {
   void findByLastName_ReturnsAnEmptyList_WhenLastNameIsNotFound() throws Exception {
     BDDMockito.when(userData.getUserList()).thenReturn(listUsers);
 
-    var response = fileUtils.readResourceFile("user/get-user-last-name-not-found-200.json");
+    var response = fileUtils.readResourceFile("user/get/get-user-last-name-not-found-200.json");
     var lastName = "Uzumaki";
 
     mockMvc.perform(MockMvcRequestBuilders.get(URL + "/lastName/{lastName}", lastName))
@@ -156,7 +156,7 @@ class UserControllerTest {
   void findByEmail_ReturnsAUserWithGivenEmail_WhenSuccessful() throws Exception {
     BDDMockito.when(userData.getUserList()).thenReturn(listUsers);
 
-    var response = fileUtils.readResourceFile("user/get-user-email-200.json");
+    var response = fileUtils.readResourceFile("user/get/get-user-email-200.json");
     var email = "goku@saiyan.com";
 
     mockMvc.perform(MockMvcRequestBuilders.get(URL + "/email/%s".formatted(email)))
@@ -182,8 +182,8 @@ class UserControllerTest {
   @Test
   @DisplayName("POST v1/users creates a user when successful")
   void save_CreatesAUser_WhenSuccessful() throws Exception {
-    var request = fileUtils.readResourceFile("user/post-request-user-200.json");
-    var response = fileUtils.readResourceFile("user/post-response-user-200.json");
+    var request = fileUtils.readResourceFile("user/post/post-request-user-200.json");
+    var response = fileUtils.readResourceFile("user/post/post-response-user-200.json");
     var userToSave = userUtils.newUserToSave();
 
     BDDMockito.when(repository.save(ArgumentMatchers.any())).thenReturn(userToSave);
@@ -235,9 +235,9 @@ class UserControllerTest {
     var emailError = Collections.singletonList(THE_FIELD_EMAIL_MUST_BE_A_VALID_E_MAIL);
 
     return Stream.of(
-            Arguments.of("post-request-user-empty-fields-400.json", allErrors),
-            Arguments.of("post-request-user-blank-fields-400.json", allErrors),
-            Arguments.of("post-request-user-invalid-email-400.json", emailError)
+            Arguments.of("post/post-request-user-empty-fields-400.json", allErrors),
+            Arguments.of("post/post-request-user-blank-fields-400.json", allErrors),
+            Arguments.of("post/post-request-user-invalid-email-400.json", emailError)
     );
   }
 
@@ -246,7 +246,7 @@ class UserControllerTest {
   void update_UpdatesAUser_WhenSucessful() throws Exception {
     BDDMockito.when(userData.getUserList()).thenReturn(listUsers);
 
-    var request = fileUtils.readResourceFile("user/put-request-user-200.json");
+    var request = fileUtils.readResourceFile("user/put/put-request-user-200.json");
 
     mockMvc.perform(
                     MockMvcRequestBuilders
@@ -288,7 +288,7 @@ class UserControllerTest {
   void update_ThrowsResponseStatusException_WhenUserIsNotFound() throws Exception {
     BDDMockito.when(userData.getUserList()).thenReturn(listUsers);
 
-    var request = fileUtils.readResourceFile("user/put-request-user-404.json");
+    var request = fileUtils.readResourceFile("user/put/put-request-user-404.json");
 
     mockMvc.perform(
                     MockMvcRequestBuilders.put(URL)
@@ -312,10 +312,10 @@ class UserControllerTest {
     var idNullError = Collections.singletonList(THE_FIELD_ID_CANNOT_BE_NULL);
 
     return Stream.of(
-            Arguments.of("put-request-user-empty-fields-400.json", allErrors),
-            Arguments.of("put-request-user-blank-fields-400.json", allErrors),
-            Arguments.of("put-request-user-invalid-email-400.json", emailError),
-            Arguments.of("put-request-user-invalid-id-400.json", idNullError)
+            Arguments.of("put/put-request-user-empty-fields-400.json", allErrors),
+            Arguments.of("put/put-request-user-blank-fields-400.json", allErrors),
+            Arguments.of("put/put-request-user-invalid-email-400.json", emailError),
+            Arguments.of("put/put-request-user-invalid-id-400.json", idNullError)
     );
   }
 

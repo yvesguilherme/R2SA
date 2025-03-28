@@ -72,7 +72,7 @@ class AnimeControllerTest {
     var mockList = List.of("Naruto", "Pokémon");
     BDDMockito.when(constants.getListAnime()).thenReturn(mockList);
 
-    var response = fileUtils.readResourceFile("anime/get-anime-thread-test-200.json");
+    var response = fileUtils.readResourceFile("anime/get/get-anime-thread-test-200.json");
 
     mockMvc.perform(MockMvcRequestBuilders.get(URL + "/thread-test"))
             .andDo(MockMvcResultHandlers.print())
@@ -86,7 +86,7 @@ class AnimeControllerTest {
   void findAll_ReturnsAListOfAnimes_WhenArgumentIsNull() throws Exception {
     BDDMockito.when(animeData.getAnimeList()).thenReturn(animeList);
 
-    var response = fileUtils.readResourceFile("anime/get-anime-null-name-200.json");
+    var response = fileUtils.readResourceFile("anime/get/get-anime-null-name-200.json");
 
     mockMvc.perform(MockMvcRequestBuilders.get(URL))
             .andDo(MockMvcResultHandlers.print())
@@ -99,7 +99,7 @@ class AnimeControllerTest {
   void findAll_ReturnsAListOfAnimes_WhenArgumentExists() throws Exception {
     BDDMockito.when(animeData.getAnimeList()).thenReturn(animeList);
 
-    var response = fileUtils.readResourceFile("anime/get-anime-demon-slayer-name-200.json");
+    var response = fileUtils.readResourceFile("anime/get/get-anime-demon-slayer-name-200.json");
     var name = "Demon Slayer";
 
     mockMvc.perform(MockMvcRequestBuilders.get(URL).param("name", name))
@@ -113,7 +113,7 @@ class AnimeControllerTest {
   void findAll_ReturnsAnEmptyList_WhenNameIsNotFound() throws Exception {
     BDDMockito.when(animeData.getAnimeList()).thenReturn(animeList);
 
-    var response = fileUtils.readResourceFile("anime/get-anime-x-name-200.json");
+    var response = fileUtils.readResourceFile("anime/get/get-anime-x-name-200.json");
     var name = "x";
 
     mockMvc.perform(MockMvcRequestBuilders.get(URL).param("name", name))
@@ -127,7 +127,7 @@ class AnimeControllerTest {
   void findById_ReturnsAnAnimeWithGivenId_WhenSuccessful() throws Exception {
     BDDMockito.when(animeData.getAnimeList()).thenReturn(animeList);
 
-    var response = fileUtils.readResourceFile("anime/get-anime-by-id-1-200.json");
+    var response = fileUtils.readResourceFile("anime/get/get-anime-by-id-1-200.json");
     var id = 1;
 
     mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{id}", id))
@@ -151,8 +151,8 @@ class AnimeControllerTest {
   @Test
   @DisplayName("POST /animes creates an anime")
   void save_CreatesAnAnime_WhenSuccessful() throws Exception {
-    var request = fileUtils.readResourceFile("anime/post-request-anime-200.json");
-    var response = fileUtils.readResourceFile("anime/post-response-anime-201.json");
+    var request = fileUtils.readResourceFile("anime/post/post-request-anime-200.json");
+    var response = fileUtils.readResourceFile("anime/post/post-response-anime-201.json");
     var animeToSave = animeUtils.newAnimeToSave("Naruto");
 
     BDDMockito.when(repository.save(ArgumentMatchers.any())).thenReturn(animeToSave);
@@ -197,8 +197,8 @@ class AnimeControllerTest {
 
   private static Stream<Arguments> postBadRequestResource() {
     return Stream.of(
-            Arguments.of("post-request-anime-blank-400.json", Collections.singletonList(THE_FIELD_NAME_IS_REQUIRED)),
-            Arguments.of("post-request-anime-empty-400.json", Collections.singletonList(THE_FIELD_NAME_IS_REQUIRED))
+            Arguments.of("post/post-request-anime-blank-400.json", Collections.singletonList(THE_FIELD_NAME_IS_REQUIRED)),
+            Arguments.of("post/post-request-anime-empty-400.json", Collections.singletonList(THE_FIELD_NAME_IS_REQUIRED))
     );
   }
 
@@ -230,9 +230,9 @@ class AnimeControllerTest {
 
   private static Stream<Arguments> putBadRequestResource() {
     return Stream.of(
-            Arguments.of("put-request-anime-blank-400.json", Collections.singletonList(THE_FIELD_NAME_IS_REQUIRED)),
-            Arguments.of("put-request-anime-empty-400.json", Collections.singletonList(THE_FIELD_NAME_IS_REQUIRED)),
-            Arguments.of("put-request-anime-id-null-400.json", Collections.singletonList(THE_FIELD_ID_CANNOT_BE_NULL))
+            Arguments.of("put/put-request-anime-blank-400.json", Collections.singletonList(THE_FIELD_NAME_IS_REQUIRED)),
+            Arguments.of("put/put-request-anime-empty-400.json", Collections.singletonList(THE_FIELD_NAME_IS_REQUIRED)),
+            Arguments.of("put/put-request-anime-id-null-400.json", Collections.singletonList(THE_FIELD_ID_CANNOT_BE_NULL))
     );
   }
 
@@ -241,7 +241,7 @@ class AnimeControllerTest {
   void update_UpdatesAnAnime_WhenSuccessful() throws Exception {
     BDDMockito.when(animeData.getAnimeList()).thenReturn(animeList);
 
-    var request = fileUtils.readResourceFile("anime/put-request-anime-200.json");
+    var request = fileUtils.readResourceFile("anime/put/put-request-anime-200.json");
 
     mockMvc.perform(
                     MockMvcRequestBuilders.put(URL)
@@ -257,7 +257,7 @@ class AnimeControllerTest {
   void update_ThrowsResponseStatusException_WhenAnimeIsNotFound() throws Exception {
     BDDMockito.when(animeData.getAnimeList()).thenReturn(animeList);
 
-    var request = fileUtils.readResourceFile("anime/put-request-anime-404.json");
+    var request = fileUtils.readResourceFile("anime/put/put-request-anime-404.json");
 
     mockMvc.perform(
                     MockMvcRequestBuilders.put(URL)
