@@ -1,1 +1,2 @@
 rootProject.name = 'anime-service'
+includeFlat 'commons-core'
