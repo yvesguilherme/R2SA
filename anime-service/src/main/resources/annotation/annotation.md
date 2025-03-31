@@ -145,3 +145,23 @@ colateral (exceto para manter estatísticas).
         }
     }
     ``` 
+- Para alterar o objeto padrão de erro do Spring, pode ser utilizado:
+  - com o ```@ExceptionHandler```: 
+  ```java
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<DefaultErrorMessage> handleNotFoundException(NotFoundException e) {
+      var error = new DefaultErrorMessage(HttpStatus.NOT_FOUND.value(), e.getReason());
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+  ```
+  - com o ```@ControllerAdvice``` ou ```@RestControllerAdvice```, a diferença é que o segundo já vem com: o ```@ResponseBody```
+  ```java
+    @RestControllerAdvice
+    public class GlobalErrorHandlerAdvice {
+        @ExceptionHandler(NotFoundException.class)
+        public ResponseEntity<DefaultErrorMessage> handleNotFoundException(NotFoundException e) {
+            var error = new DefaultErrorMessage(HttpStatus.NOT_FOUND.value(), e.getReason());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        }
+    }
+  ```

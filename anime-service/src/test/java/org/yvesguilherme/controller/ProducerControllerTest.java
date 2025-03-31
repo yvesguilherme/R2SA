@@ -131,12 +131,14 @@ class ProducerControllerTest {
   void findById_ThrowsResponseStatusException404_WhenProducerIsNotFound() throws Exception {
     BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados
 
+    var expectedError = fileUtils.readResourceFile("producer/get/get-producer-by-id-404.json");
+
     var id = 4;
 
     mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{id}", id))
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isNotFound())
-            .andExpect(MockMvcResultMatchers.status().reason("Producer not found!"));
+            .andExpect(MockMvcResultMatchers.content().json(expectedError));
   }
 
   @Test
@@ -256,6 +258,7 @@ class ProducerControllerTest {
     BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados
 
     var request = fileUtils.readResourceFile("producer/put/put-request-producer-404.json");
+    var expectedError = fileUtils.readResourceFile("producer/put/put-response-producer-404.json");
 
     mockMvc.perform(
                     MockMvcRequestBuilders
@@ -265,7 +268,7 @@ class ProducerControllerTest {
             )
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isNotFound())
-            .andExpect(MockMvcResultMatchers.status().reason("Producer not found!"));
+            .andExpect(MockMvcResultMatchers.content().json(expectedError));
 
   }
 
@@ -286,11 +289,13 @@ class ProducerControllerTest {
   void delete_ThrowsResponseStatusException_WhenProducerIsNotFound() throws Exception {
     BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados
 
+    var expectedError = fileUtils.readResourceFile("producer/delete/delete-response-producer-by-id-404.json");
+
     var producerId = 99;
 
     mockMvc.perform(MockMvcRequestBuilders.delete(URL + "/{id}", producerId))
             .andDo(MockMvcResultHandlers.print())
             .andExpect(MockMvcResultMatchers.status().isNotFound())
-            .andExpect(MockMvcResultMatchers.status().reason("Producer not found!"));
+            .andExpect(MockMvcResultMatchers.content().json(expectedError));
   }
 }
