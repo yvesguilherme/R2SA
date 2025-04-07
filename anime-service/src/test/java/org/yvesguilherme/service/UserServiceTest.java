@@ -13,6 +13,7 @@ import org.yvesguilherme.commons.UserUtils;
 import org.yvesguilherme.domain.User;
 import org.yvesguilherme.exception.NotFoundException;
 import org.yvesguilherme.repository.UserHardCodedRepository;
+import org.yvesguilherme.repository.UserRepository;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +29,9 @@ class UserServiceTest {
   @Mock
   private UserHardCodedRepository repository;
 
+  @Mock
+  private UserRepository userRepository;
+
   private List<User> userList;
 
   @InjectMocks
@@ -41,7 +45,7 @@ class UserServiceTest {
   @Test
   @DisplayName("findAll returns a list with all Users when successful")
   void findAll_ReturnsAListWithAllUsers_WhenSuccessful() {
-    BDDMockito.when(repository.findAll()).thenReturn(userList);
+    BDDMockito.when(userRepository.findAll()).thenReturn(userList);
 
     var users = service.findAll();
 

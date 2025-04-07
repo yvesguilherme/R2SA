@@ -24,6 +24,7 @@ import org.yvesguilherme.commons.UserUtils;
 import org.yvesguilherme.domain.User;
 import org.yvesguilherme.repository.UserData;
 import org.yvesguilherme.repository.UserHardCodedRepository;
+import org.yvesguilherme.repository.UserRepository;
 import org.yvesguilherme.service.UserService;
 
 import java.util.ArrayList;
@@ -59,6 +60,9 @@ class UserControllerTest {
   @MockitoSpyBean
   private UserHardCodedRepository repository;
 
+  @MockitoBean
+  private UserRepository userRepository;
+
   private List<User> listUsers = new ArrayList<>();
 
   @BeforeEach
@@ -69,7 +73,7 @@ class UserControllerTest {
   @Test
   @DisplayName("GET v1/users returns a list of users when successful")
   void findAll_ReturnsListOfUsers_WhenSuccessful() throws Exception {
-    BDDMockito.when(userData.getUserList()).thenReturn(listUsers);
+    BDDMockito.when(userRepository.findAll()).thenReturn(listUsers);
 
     var response = fileUtils.readResourceFile("user/get/get-user-200.json");
 

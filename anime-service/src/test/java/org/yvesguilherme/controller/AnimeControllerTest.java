@@ -11,7 +11,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
@@ -21,7 +21,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.yvesguilherme.commons.AnimeUtils;
 import org.yvesguilherme.commons.FileUtils;
+import org.yvesguilherme.config.ConnectionBeanConfiguration;
 import org.yvesguilherme.domain.Anime;
+import org.yvesguilherme.mapper.AnimeMapperImpl;
 import org.yvesguilherme.repository.AnimeData;
 import org.yvesguilherme.repository.AnimeHardCodedRepository;
 import org.yvesguilherme.service.AnimeService;
@@ -32,7 +34,16 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @WebMvcTest(controllers = AnimeController.class)
-@ComponentScan(basePackages = "org.yvesguilherme")
+@Import({
+        AnimeService.class,
+        AnimeHardCodedRepository.class,
+        AnimeMapperImpl.class,
+        ConnectionBeanConfiguration.class,
+        AnimeData.class,
+        Constants.class,
+        FileUtils.class,
+        AnimeUtils.class
+})
 class AnimeControllerTest {
   private static final String URL = "/animes";
   private static final String THE_FIELD_NAME_IS_REQUIRED = "The field 'name' is required";

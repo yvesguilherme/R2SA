@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.yvesguilherme.domain.User;
 import org.yvesguilherme.exception.NotFoundException;
 import org.yvesguilherme.repository.UserHardCodedRepository;
+import org.yvesguilherme.repository.UserRepository;
 
 import java.util.List;
 
@@ -14,9 +15,10 @@ public class UserService {
   public static final String USER_NOT_FOUND = "User not found";
 
   private final UserHardCodedRepository repository;
+  private final UserRepository userRepository;
 
   public List<User> findAll() {
-    return repository.findAll();
+    return userRepository.findAll();
   }
 
   public User findByIdOrThrowNotFound(Long id) {
