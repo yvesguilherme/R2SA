@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.yvesguilherme.domain.User;
 import org.yvesguilherme.exception.NotFoundException;
-import org.yvesguilherme.repository.UserHardCodedRepository;
 import org.yvesguilherme.repository.UserRepository;
 
 import java.util.List;
@@ -14,11 +13,10 @@ import java.util.List;
 public class UserService {
   public static final String USER_NOT_FOUND = "User not found";
 
-  private final UserHardCodedRepository repository;
-  private final UserRepository userRepository;
+  private final UserRepository repository;
 
   public List<User> findAll() {
-    return userRepository.findAll();
+    return repository.findAll();
   }
 
   public User findByIdOrThrowNotFound(Long id) {
@@ -28,16 +26,16 @@ public class UserService {
   }
 
   public List<User> findByFirstName(String firstName) {
-    return repository.findByFirstName(firstName);
+    return repository.findByFirstNameIgnoreCase(firstName);
   }
 
   public List<User> findByLastName(String lastName) {
-    return repository.findByLastName(lastName);
+    return repository.findByLastNameIgnoreCase(lastName);
   }
 
   public User findByEmailOrThrowNotFound(String email) {
     return repository
-            .findByEmail(email)
+            .findByEmailIgnoreCase(email)
             .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
   }
 
@@ -54,6 +52,6 @@ public class UserService {
   public void update(User user) {
     findByIdOrThrowNotFound(user.getId());
 
-    repository.update(user);
+    repository.save(user);
   }
 }

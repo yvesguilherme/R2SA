@@ -12,7 +12,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.yvesguilherme.commons.UserUtils;
 import org.yvesguilherme.domain.User;
 import org.yvesguilherme.exception.NotFoundException;
-import org.yvesguilherme.repository.UserHardCodedRepository;
 import org.yvesguilherme.repository.UserRepository;
 
 import java.util.Collections;
@@ -27,10 +26,7 @@ class UserServiceTest {
   private UserService service;
 
   @Mock
-  private UserHardCodedRepository repository;
-
-  @Mock
-  private UserRepository userRepository;
+  private UserRepository repository;
 
   private List<User> userList;
 
@@ -45,7 +41,7 @@ class UserServiceTest {
   @Test
   @DisplayName("findAll returns a list with all Users when successful")
   void findAll_ReturnsAListWithAllUsers_WhenSuccessful() {
-    BDDMockito.when(userRepository.findAll()).thenReturn(userList);
+    BDDMockito.when(repository.findAll()).thenReturn(userList);
 
     var users = service.findAll();
 
@@ -90,7 +86,7 @@ class UserServiceTest {
     var user = userList.getFirst();
     var expectedUsersFound = singletonList(user);
 
-    BDDMockito.when(repository.findByFirstName(user.getFirstName())).thenReturn(expectedUsersFound);
+    BDDMockito.when(repository.findByFirstNameIgnoreCase(user.getFirstName())).thenReturn(expectedUsersFound);
 
     var usersFound = service.findByFirstName(user.getFirstName());
 
@@ -106,7 +102,7 @@ class UserServiceTest {
   void findByFirstName_ReturnsAnEmptyList_WhenNoUserIsFound() {
     var firstName = "not-found";
 
-    BDDMockito.when(repository.findByFirstName(firstName)).thenReturn(Collections.emptyList());
+    BDDMockito.when(repository.findByFirstNameIgnoreCase(firstName)).thenReturn(Collections.emptyList());
 
     var usersFound = service.findByFirstName(firstName);
 
@@ -122,7 +118,7 @@ class UserServiceTest {
     var user = userList.getLast();
     var expectedUsersFound = singletonList(user);
 
-    BDDMockito.when(repository.findByLastName(user.getLastName())).thenReturn(expectedUsersFound);
+    BDDMockito.when(repository.findByLastNameIgnoreCase(user.getLastName())).thenReturn(expectedUsersFound);
 
     var usersFound = service.findByLastName(user.getLastName());
 
@@ -138,7 +134,7 @@ class UserServiceTest {
   void findByLastName_ReturnsAnEmptyList_WhenNoUserIsFound() {
     var lastName = "not-found";
 
-    BDDMockito.when(repository.findByLastName(lastName)).thenReturn(Collections.emptyList());
+    BDDMockito.when(repository.findByLastNameIgnoreCase(lastName)).thenReturn(Collections.emptyList());
 
     var usersFound = service.findByLastName(lastName);
 
@@ -153,7 +149,7 @@ class UserServiceTest {
   void findByEmail_ReturnsAUserWithTheSameEmail_WhenSuccessful() {
     var expectedUser = userList.getFirst();
 
-    BDDMockito.when(repository.findByEmail(expectedUser.getEmail())).thenReturn(Optional.of(expectedUser));
+    BDDMockito.when(repository.findByEmailIgnoreCase(expectedUser.getEmail())).thenReturn(Optional.of(expectedUser));
 
     var userFound = service.findByEmailOrThrowNotFound(expectedUser.getEmail());
 
@@ -168,7 +164,7 @@ class UserServiceTest {
   void findByEmail_ThrowsNotFoundExceptionWhenUserEmailIsNotFound() {
     var emailNotFound = "not_found@notfound.com";
 
-    BDDMockito.when(repository.findByEmail(emailNotFound)).thenReturn(Optional.empty());
+    BDDMockito.when(repository.findByEmailIgnoreCase(emailNotFound)).thenReturn(Optional.empty());
 
     Assertions
             .assertThatException()
@@ -224,7 +220,7 @@ class UserServiceTest {
     userToUpdate.setFirstName("Saitama");
 
     BDDMockito.when(repository.findById(userToUpdate.getId())).thenReturn(Optional.of(userToUpdate));
-    BDDMockito.doNothing().when(repository).update(userToUpdate);
+    BDDMockito.when(repository.save(userToUpdate)).thenReturn(userToUpdate);
 
     service.update(userToUpdate);
 
@@ -240,7 +236,7 @@ class UserServiceTest {
     userToUpdate.setLastName("Hatake");
 
     BDDMockito.when(repository.findById(userToUpdate.getId())).thenReturn(Optional.of(userToUpdate));
-    BDDMockito.doNothing().when(repository).update(userToUpdate);
+    BDDMockito.when(repository.save(userToUpdate)).thenReturn(userToUpdate);
 
     service.update(userToUpdate);
 
@@ -256,7 +252,7 @@ class UserServiceTest {
     userToUpdate.setEmail("sonGoku2025@gmail.com");
 
     BDDMockito.when(repository.findById(userToUpdate.getId())).thenReturn(Optional.of(userToUpdate));
-    BDDMockito.doNothing().when(repository).update(userToUpdate);
+    BDDMockito.when(repository.save(userToUpdate)).thenReturn(userToUpdate);
 
     service.update(userToUpdate);
 
