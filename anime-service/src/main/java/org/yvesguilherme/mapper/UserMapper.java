@@ -1,7 +1,6 @@
 package org.yvesguilherme.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.yvesguilherme.domain.User;
 import org.yvesguilherme.request.UserPostRequest;
@@ -17,7 +16,6 @@ public interface UserMapper {
 
   List<UserGetResponse> toUserGetResponseList(List<User> userList);
 
-  @Mapping(target = "id", expression = "java(java.util.concurrent.ThreadLocalRandom.current().nextLong(100_000))")
   User toUser(UserPostRequest userPostRequest);
 
   User toUser(UserPutRequest userPutRequest);

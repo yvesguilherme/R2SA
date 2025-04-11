@@ -2,6 +2,7 @@ package org.yvesguilherme.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.yvesguilherme.domain.User;
 import org.yvesguilherme.exception.NotFoundException;
 import org.yvesguilherme.repository.UserRepository;
@@ -39,16 +40,19 @@ public class UserService {
             .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND));
   }
 
+  @Transactional
   public User save(User user) {
     return repository.save(user);
   }
 
+  @Transactional
   public void delete(Long id) {
     var user = findByIdOrThrowNotFound(id);
 
     repository.delete(user);
   }
 
+  @Transactional
   public void update(User user) {
     findByIdOrThrowNotFound(user.getId());
 
