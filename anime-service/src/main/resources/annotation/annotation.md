@@ -165,3 +165,7 @@ colateral (exceto para manter estatísticas).
         }
     }
   ```
+
+### Lombok
+
+- ```@With``` - Gera métodos "whiters" para a classe, permitindo que você crie uma nova instância do objeto com um valor modificado para um campo específico, mantendo os outros campos inalterados. É útil para classes imutáveis ou para criar cópias modificadas de objetos.

@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.yvesguilherme.commons.UserUtils;
 import org.yvesguilherme.domain.User;
+import org.yvesguilherme.exception.EmailAlreadyExistsException;
 import org.yvesguilherme.exception.NotFoundException;
 import org.yvesguilherme.repository.UserRepository;
 
@@ -178,6 +179,7 @@ class UserServiceTest {
     var userToSave = userUtils.newUserToSave();
 
     BDDMockito.when(repository.save(userToSave)).thenReturn(userToSave);
+    BDDMockito.when(repository.findByEmailIgnoreCase(userToSave.getEmail())).thenReturn(Optional.empty());
 
     var savedUser = service.save(userToSave);
 
@@ -185,6 +187,21 @@ class UserServiceTest {
             .assertThat(savedUser)
             .hasNoNullFieldsOrProperties()
             .isEqualTo(userToSave);
+  }
+
+  @Test
+  @DisplayName("save throws EmailAlreadyExistsException when e-mail belongs to another user")
+  void save_ThrowsEmailAlreadyExistsException_WhenEmailBelongsToAnotherUser() {
+    var savedUser = userList.getLast();
+    var userToSave = userUtils.newUserToSave().withEmail(savedUser.getEmail());
+    var email = userToSave.getEmail();
+
+    BDDMockito.when(repository.findByEmailIgnoreCase(email)).thenReturn(Optional.of(savedUser));
+
+    Assertions
+            .assertThatException()
+            .isThrownBy(() -> service.save(userToSave))
+            .isInstanceOf(EmailAlreadyExistsException.class);
   }
 
   @Test
@@ -216,10 +233,12 @@ class UserServiceTest {
   @Test
   @DisplayName("update updates a User firsName when successful")
   void update_UpdatesAUserFirstName_WhenSuccessful() {
-    var userToUpdate = userList.getFirst();
-    userToUpdate.setFirstName("Saitama");
+    var userToUpdate = userList.getFirst().withFirstName("Saitama");
+    var email = userToUpdate.getEmail();
+    var id = userToUpdate.getId();
 
     BDDMockito.when(repository.findById(userToUpdate.getId())).thenReturn(Optional.of(userToUpdate));
+    BDDMockito.when(repository.findByEmailIgnoreCaseAndIdNot(email, id)).thenReturn(Optional.empty());
     BDDMockito.when(repository.save(userToUpdate)).thenReturn(userToUpdate);
 
     service.update(userToUpdate);
@@ -272,5 +291,22 @@ class UserServiceTest {
             .assertThatException()
             .isThrownBy(() -> service.update(userToUpdate))
             .isInstanceOf(NotFoundException.class);
+  }
+
+  @Test
+  @DisplayName("update throws EmailAlreadyExistsException when e-mail belongs to another user")
+  void update_ThrowsEmailAlreadyExistsException_WhenEmailBelongsToAnotherUser() {
+    var savedUser = userList.getLast();
+    var userToUpdate = userList.getFirst().withEmail(savedUser.getEmail());
+    var email = userToUpdate.getEmail();
+    var id = userToUpdate.getId();
+
+    BDDMockito.when(repository.findById(userToUpdate.getId())).thenReturn(Optional.of(userToUpdate));
+    BDDMockito.when(repository.findByEmailIgnoreCaseAndIdNot(email, id)).thenReturn(Optional.of(savedUser));
+
+    Assertions
+            .assertThatException()
+            .isThrownBy(() -> service.update(userToUpdate))
+            .isInstanceOf(EmailAlreadyExistsException.class);
   }
 }

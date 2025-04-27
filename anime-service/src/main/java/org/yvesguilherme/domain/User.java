@@ -3,6 +3,7 @@ package org.yvesguilherme.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+@With
 @Getter
 @Setter
 @Builder

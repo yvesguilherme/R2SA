@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.yvesguilherme.domain.User;
+import org.yvesguilherme.exception.EmailAlreadyExistsException;
 import org.yvesguilherme.exception.NotFoundException;
 import org.yvesguilherme.repository.UserRepository;
 
@@ -42,6 +43,7 @@ public class UserService {
 
   @Transactional
   public User save(User user) {
+    assertEmailDoesNotExist(user.getEmail());
     return repository.save(user);
   }
 
@@ -55,7 +57,19 @@ public class UserService {
   @Transactional
   public void update(User user) {
     findByIdOrThrowNotFound(user.getId());
-
+    assertEmailDoesNotExist(user.getEmail(), user.getId());
     repository.save(user);
+  }
+
+  public void assertEmailDoesNotExist(String email) {
+    repository.findByEmailIgnoreCase(email).ifPresent(this::throwEmailExistsException);
+  }
+
+  public void assertEmailDoesNotExist(String email, Long id) {
+    repository.findByEmailIgnoreCaseAndIdNot(email, id).ifPresent(this::throwEmailExistsException);
+  }
+
+  private void throwEmailExistsException(User user) {
+    throw new EmailAlreadyExistsException("E-mail %s already exists".formatted(user.getEmail()));
   }
 }
