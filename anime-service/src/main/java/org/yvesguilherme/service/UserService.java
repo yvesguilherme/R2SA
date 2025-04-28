@@ -61,11 +61,11 @@ public class UserService {
     repository.save(user);
   }
 
-  public void assertEmailDoesNotExist(String email) {
+  private void assertEmailDoesNotExist(String email) {
     repository.findByEmailIgnoreCase(email).ifPresent(this::throwEmailExistsException);
   }
 
-  public void assertEmailDoesNotExist(String email, Long id) {
+  private void assertEmailDoesNotExist(String email, Long id) {
     repository.findByEmailIgnoreCaseAndIdNot(email, id).ifPresent(this::throwEmailExistsException);
   }
 
