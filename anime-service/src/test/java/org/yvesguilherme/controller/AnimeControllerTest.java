@@ -14,7 +14,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -25,18 +24,19 @@ import org.yvesguilherme.config.ConnectionBeanConfiguration;
 import org.yvesguilherme.domain.Anime;
 import org.yvesguilherme.mapper.AnimeMapperImpl;
 import org.yvesguilherme.repository.AnimeData;
-import org.yvesguilherme.repository.AnimeHardCodedRepository;
+import org.yvesguilherme.repository.AnimeRepository;
 import org.yvesguilherme.service.AnimeService;
 import org.yvesguilherme.util.Constants;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @WebMvcTest(controllers = AnimeController.class)
 @Import({
+        AnimeRepository.class,
         AnimeService.class,
-        AnimeHardCodedRepository.class,
         AnimeMapperImpl.class,
         ConnectionBeanConfiguration.class,
         AnimeData.class,
@@ -64,8 +64,8 @@ class AnimeControllerTest {
   @MockitoBean
   private Constants constants;
 
-  @MockitoSpyBean
-  private AnimeHardCodedRepository repository;
+  @MockitoBean
+  private AnimeRepository repository;
 
   private List<Anime> animeList;
 
@@ -95,7 +95,7 @@ class AnimeControllerTest {
   @Test
   @DisplayName("GET v1/animes returns a list with all animes when argument is null")
   void findAll_ReturnsAListOfAnimes_WhenArgumentIsNull() throws Exception {
-    BDDMockito.when(animeData.getAnimeList()).thenReturn(animeList);
+    BDDMockito.when(repository.findAll()).thenReturn(animeList);
 
     var response = fileUtils.readResourceFile("anime/get/get-anime-null-name-200.json");
 
@@ -108,7 +108,8 @@ class AnimeControllerTest {
   @Test
   @DisplayName("GET v1/animes?name=Demon Slayer returns a list with found object when name exists")
   void findAll_ReturnsAListOfAnimes_WhenArgumentExists() throws Exception {
-    BDDMockito.when(animeData.getAnimeList()).thenReturn(animeList);
+    var secondAnime = animeList.get(1);
+    BDDMockito.when(repository.findByName(secondAnime.getName())).thenReturn(Collections.singletonList(secondAnime));
 
     var response = fileUtils.readResourceFile("anime/get/get-anime-demon-slayer-name-200.json");
     var name = "Demon Slayer";
@@ -136,7 +137,8 @@ class AnimeControllerTest {
   @Test
   @DisplayName("GET /animes/1 returns an Anime with given id")
   void findById_ReturnsAnAnimeWithGivenId_WhenSuccessful() throws Exception {
-    BDDMockito.when(animeData.getAnimeList()).thenReturn(animeList);
+    var firstAnime = animeList.getFirst();
+    BDDMockito.when(repository.findById(firstAnime.getId())).thenReturn(Optional.of(firstAnime));
 
     var response = fileUtils.readResourceFile("anime/get/get-anime-by-id-1-200.json");
     var id = 1;
@@ -252,7 +254,8 @@ class AnimeControllerTest {
   @Test
   @DisplayName("PUT /animes updates an anime when successful")
   void update_UpdatesAnAnime_WhenSuccessful() throws Exception {
-    BDDMockito.when(animeData.getAnimeList()).thenReturn(animeList);
+    var firstAnime = animeList.getFirst();
+    BDDMockito.when(repository.findById(firstAnime.getId())).thenReturn(Optional.of(firstAnime));
 
     var request = fileUtils.readResourceFile("anime/put/put-request-anime-200.json");
 
@@ -286,9 +289,10 @@ class AnimeControllerTest {
   @Test
   @DisplayName("DELETE /animes/1 removes an anime")
   void delete_RemovesAnAnime_WhenSuccessful() throws Exception {
-    BDDMockito.when(animeData.getAnimeList()).thenReturn(animeList);
+    var firstAnime = animeList.getFirst();
+    BDDMockito.when(repository.findById(firstAnime.getId())).thenReturn(Optional.of(firstAnime));
 
-    var animeId = animeList.getFirst().getId();
+    var animeId = firstAnime.getId();
 
     mockMvc.perform(MockMvcRequestBuilders.delete(URL + "/{id}", animeId))
             .andDo(MockMvcResultHandlers.print())

@@ -11,7 +11,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -21,8 +21,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.yvesguilherme.commons.FileUtils;
 import org.yvesguilherme.commons.UserUtils;
 import org.yvesguilherme.domain.User;
+import org.yvesguilherme.mapper.UserMapperImpl;
+import org.yvesguilherme.repository.UserData;
 import org.yvesguilherme.repository.UserRepository;
 import org.yvesguilherme.service.UserService;
+import org.yvesguilherme.util.Constants;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,7 +36,16 @@ import java.util.stream.Stream;
 import static java.util.Collections.singletonList;
 
 @WebMvcTest(UserController.class)
-@ComponentScan(basePackages = "org.yvesguilherme")
+//@ComponentScan(basePackages = "org.yvesguilherme")
+@Import({
+        UserRepository.class,
+        UserService.class,
+        UserMapperImpl.class,
+        UserData.class,
+        Constants.class,
+        FileUtils.class,
+        UserUtils.class
+})
 class UserControllerTest {
   private static final String URL = "/users";
   private static final String THE_FIELD_FIRST_NAME_IS_REQUIRED = "The field 'firstName' is required";

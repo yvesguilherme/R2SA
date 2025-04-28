@@ -14,7 +14,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -25,18 +24,19 @@ import org.yvesguilherme.config.ConnectionBeanConfiguration;
 import org.yvesguilherme.domain.Producer;
 import org.yvesguilherme.mapper.ProducerMapperImpl;
 import org.yvesguilherme.repository.ProducerData;
-import org.yvesguilherme.repository.ProducerHardCodedRepository;
+import org.yvesguilherme.repository.ProducerRepository;
 import org.yvesguilherme.service.ProducerService;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @WebMvcTest(controllers = ProducerController.class)
 @Import({
+        ProducerRepository.class,
         ConnectionBeanConfiguration.class,
         ProducerData.class,
-        ProducerHardCodedRepository.class,
         ProducerMapperImpl.class,
         ProducerService.class,
         FileUtils.class,
@@ -55,8 +55,8 @@ class ProducerControllerTest {
   @MockitoBean
   private ProducerData producerData;
 
-  @MockitoSpyBean
-  private ProducerHardCodedRepository repository;
+  @MockitoBean
+  private ProducerRepository repository;
 
   private List<Producer> producerList;
 
@@ -74,7 +74,7 @@ class ProducerControllerTest {
   @Test
   @DisplayName("GET v1/producers returns a list with all Producers when argument is null")
   void findAll_ReturnsAListWithAllProducers_WhenArgumentIsNull() throws Exception {
-    BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados, devemos mocá-los.
+    BDDMockito.when(repository.findAll()).thenReturn(producerList);  // Não temos domínio sobre os dados retornados, devemos mocá-los.
 
     var response = fileUtils.readResourceFile("producer/get/get-producer-null-name-200.json");
 
@@ -87,7 +87,8 @@ class ProducerControllerTest {
   @Test
   @DisplayName("GET /producers?name=Ufotable returns a list with found object when name exists")
   void findAll_ReturnsAListWithFoundObject_WhenNameExists() throws Exception {
-    BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados, devemos mocá-los.
+    var firstProducer = producerList.getFirst();
+    BDDMockito.when(repository.findByNameIgnoreCase(firstProducer.getName())).thenReturn(Collections.singletonList(firstProducer)); // Não temos domínio sobre os dados retornados, devemos mocá-los.
 
     var response = fileUtils.readResourceFile("producer/get/get-producer-ufotable-name-200.json");
     var name = "Ufotable";
@@ -101,7 +102,7 @@ class ProducerControllerTest {
   @Test
   @DisplayName("GET /producers?name=x returns an empty list when name is not found")
   void findAll_ReturnsAnEmptyList_WhenNameIsNotFound() throws Exception {
-    BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados, devemos mocá-los.
+    BDDMockito.when(repository.findAll()).thenReturn(Collections.emptyList()); // Não temos domínio sobre os dados retornados, devemos mocá-los.
 
     var response = fileUtils.readResourceFile("producer/get/get-producer-x-name-200.json");
     var name = "x";
@@ -115,7 +116,8 @@ class ProducerControllerTest {
   @Test
   @DisplayName("GET /producers/1 returns a Producer with given id")
   void findById_ReturnsAProducerWithGivenId_WhenSuccessful() throws Exception {
-    BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados
+    var firstProducer = producerList.getFirst();
+    BDDMockito.when(repository.findById(firstProducer.getId())).thenReturn(Optional.of(firstProducer)); // Não temos domínio sobre os dados retornados
 
     var response = fileUtils.readResourceFile("producer/get/get-producer-by-id-1-200.json");
     var id = 1;
@@ -129,11 +131,11 @@ class ProducerControllerTest {
   @Test
   @DisplayName("GET /producers/4 throws ResponseStatusException 404 when Producer is not found")
   void findById_ThrowsResponseStatusException404_WhenProducerIsNotFound() throws Exception {
-    BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados
+    var id = 4L;
+
+    BDDMockito.when(repository.findById(id)).thenReturn(Optional.empty()); // Não temos domínio sobre os dados retornados
 
     var expectedError = fileUtils.readResourceFile("producer/get/get-producer-by-id-404.json");
-
-    var id = 4;
 
     mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{id}", id))
             .andDo(MockMvcResultHandlers.print())
@@ -238,7 +240,8 @@ class ProducerControllerTest {
   @Test
   @DisplayName("PUT /producers updates a Producer when successful")
   void update_UpdatesAProducer_WhenSuccessful() throws Exception {
-    BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados, devemos mocá-los.
+    var firstProducer = producerList.getFirst();
+    BDDMockito.when(repository.findById(firstProducer.getId())).thenReturn(Optional.of(firstProducer));  // Não temos domínio sobre os dados retornados, devemos mocá-los.
 
     var request = fileUtils.readResourceFile("producer/put/put-request-producer-200.json");
 
@@ -255,7 +258,7 @@ class ProducerControllerTest {
   @Test
   @DisplayName("PUT /producers throws ResponseStatusException when producer is not found")
   void update_ThrowsResponseStatusException_WhenProducerIsNotFound() throws Exception {
-    BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados
+    BDDMockito.when(repository.findById(99L)).thenReturn(Optional.empty()); // Não temos domínio sobre os dados retornados
 
     var request = fileUtils.readResourceFile("producer/put/put-request-producer-404.json");
     var expectedError = fileUtils.readResourceFile("producer/put/put-response-producer-404.json");
@@ -275,9 +278,11 @@ class ProducerControllerTest {
   @Test
   @DisplayName("DELETE /producers/1 delete removes a producer")
   void delete_RemovesProducer_WhenSuccessful() throws Exception {
-    BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados
+    var firstProducer = producerList.getFirst();
+    BDDMockito.when(repository.findById(firstProducer.getId())).thenReturn(Optional.of(firstProducer));  // Não temos domínio sobre os dados retornados, devemos mocá-los.
 
-    var producerId = producerList.getFirst().getId();
+
+    var producerId = firstProducer.getId();
 
     mockMvc.perform(MockMvcRequestBuilders.delete(URL + "/{id}", producerId))
             .andDo(MockMvcResultHandlers.print())
@@ -287,11 +292,12 @@ class ProducerControllerTest {
   @Test
   @DisplayName("DELETE /producers/99 throws ResponseStatusException when producer is not found")
   void delete_ThrowsResponseStatusException_WhenProducerIsNotFound() throws Exception {
-    BDDMockito.when(producerData.getProducers()).thenReturn(producerList); // Não temos domínio sobre os dados retornados
+    var producerId = 99L;
+
+    BDDMockito.when(repository.findById(producerId)).thenReturn(Optional.empty()); // Não temos domínio sobre os dados retornados
 
     var expectedError = fileUtils.readResourceFile("producer/delete/delete-response-producer-by-id-404.json");
 
-    var producerId = 99;
 
     mockMvc.perform(MockMvcRequestBuilders.delete(URL + "/{id}", producerId))
             .andDo(MockMvcResultHandlers.print())

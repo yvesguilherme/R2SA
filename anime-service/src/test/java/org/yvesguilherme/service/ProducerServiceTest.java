@@ -10,7 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.yvesguilherme.commons.ProducerUtils;
 import org.yvesguilherme.domain.Producer;
 import org.yvesguilherme.exception.NotFoundException;
-import org.yvesguilherme.repository.ProducerHardCodedRepository;
+import org.yvesguilherme.repository.ProducerRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +26,7 @@ class ProducerServiceTest {
   private ProducerService service;
 
   @Mock
-  private ProducerHardCodedRepository repository;
+  private ProducerRepository repository;
 
   private List<Producer> producerList;
 
@@ -56,7 +56,7 @@ class ProducerServiceTest {
     var producer = producerList.getFirst();
     var expectedProducersFound = singletonList(producer);
 
-    BDDMockito.when(repository.findByName(producer.getName())).thenReturn(expectedProducersFound);
+    BDDMockito.when(repository.findByNameIgnoreCase(producer.getName())).thenReturn(expectedProducersFound);
 
     var producersFound = service.findAll(producer.getName());
 
@@ -69,7 +69,7 @@ class ProducerServiceTest {
   void findAllReturnsEmptyListWhenNameIsNotFound() {
     var producer = "not-found";
 
-    BDDMockito.when(repository.findByName(producer)).thenReturn(emptyList());
+    BDDMockito.when(repository.findByNameIgnoreCase(producer)).thenReturn(emptyList());
 
     var producersFound = service.findAll(producer);
 
@@ -152,7 +152,7 @@ class ProducerServiceTest {
     producerToUpdate.setName("Aniplex");
 
     BDDMockito.when(repository.findById(producerToUpdate.getId())).thenReturn(Optional.of(producerToUpdate));
-    BDDMockito.doNothing().when(repository).update(producerToUpdate);
+    BDDMockito.when(repository.save(producerToUpdate)).thenReturn(producerToUpdate);
 
     service.update(producerToUpdate);
 
